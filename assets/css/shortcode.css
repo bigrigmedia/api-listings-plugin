@@ -1,0 +1,76 @@
+.api-listings {
+    max-width: 1270px;
+    margin: 0 auto;
+    padding: 15px 30px;
+}
+
+#api-listings-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+#api-listings-container .unit-listing {
+    display: flex;
+    flex-direction: column;
+    background-color: #287092;
+}
+
+#api-listings-container .unit-data {
+    min-height: 350px;
+    padding: 15px;
+}
+
+#api-listings-container .meta-data {
+    font-size: 20px;
+    margin-top: 15px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+#api-listings-container .unit-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#api-listings-container .unit-price {
+    font-size: 34px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+#api-listings-container .listing-number,
+#api-listings-container .list-date,
+#api-listings-container .sos-number {
+    font-size: 14px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+#api-listings-container .unit-image {
+    background-size: cover;
+    background-position: center;
+    min-height: 350px;
+}
+
+#api-listings-container .unit-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+#api-listings-container .button-api-listing {
+    font-size: 18px;
+    padding: 15px 25px;
+    font-weight: 700;
+    color: white;
+    background-color: #6d7d3c;
+    font-family: 'Arial', sans-serif;
+    border-radius: 6px;
+    text-transform: uppercase;
+    margin-top: 15px;
+}
