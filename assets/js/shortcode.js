@@ -12,6 +12,7 @@ var itemsPerBatch = 6; // How many posts to show per batch
 var listingAmount = isHome ? 3 : 32; // Set listing amount based on isHome value
 itemsPerBatch = isHome ? 3 : 6; // Set items per batch based on isHome value
 
+var propertyId = api_listings_plugin_settings?.property_id;
 
 // Locate the load more and load less buttons
 var loadMoreBTN = document.getElementById("load-more-btn");
@@ -55,7 +56,7 @@ function fetchPosts() {
     var videoQuery = queryVideo ? "&video_tour" : "";
 
     var apiRequest =
-        "https://www.legacymhc.com/wp-json/wp/v2/properties?per_page=" + listingAmount + "&parent=2570&_embed&sos_number=" + encodeURIComponent(sos_number) +
+        "https://www.legacymhc.com/wp-json/wp/v2/properties?per_page=" + listingAmount + "&parent=" + propertyId + "&_embed&sos_number=" + encodeURIComponent(sos_number) +
         "&listdate=" + encodeURIComponent(sortOrder) + videoQuery;
 
     var ourRequest = new XMLHttpRequest();

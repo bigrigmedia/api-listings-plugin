@@ -1,0 +1,203 @@
+.api-plugin-single-listing {
+    padding: 30px 0;
+
+    .single-listing-container {
+        width: 100%;
+        max-width: 1440px !important;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .api-property-title {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 32px;
+    }
+    .api-property-listing-number {
+        text-align: center;
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .api-property-meta {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        margin-bottom: 30px;
+        font-size: 22px;
+
+        span + span::before {
+            content: '|';
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+    }
+
+    .api-property-content {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        padding-top: 45px;
+        gap: 15px;
+
+        @media (max-width: 1023px) {
+            flex-flow: column;
+        }
+    }
+
+    .api-property-gallery {
+        width: 65%;
+
+        @media (max-width: 1023px) {
+            width: 100%;
+        }
+    
+        .api-property-gallery__item {
+            margin-bottom: 15px;
+        }
+
+        .api-property-gallery__large .gallery-bg-img {
+            height: 650px;
+        }
+
+        .api-property-gallery__nav {
+            margin-bottom: 15px;
+
+            .gallery-bg-img {
+                height: 230px;
+            }    
+
+            .api-property-gallery__item:hover {   
+                cursor: pointer;
+            }
+        }
+
+        .gallery-bg-img {
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slick-prev,
+        .slick-next {
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            z-index: 10;
+            background-color: transparent;
+            border: none;
+            font-size: 32px;
+            width: 30px;
+            fill: white;
+        }
+
+        .slick-next {
+            right: 15px;
+        }
+
+        .slick-prev {
+            left: 15px;
+        }
+    }
+
+    .api-property-contact {
+        width: 35%;
+        background-color: var(--contact-form-color);
+        padding: 15px;
+        height: 100%;
+
+        @media (max-width: 1023px) {
+            width: 100%;
+        }
+
+        .contact-intro,
+        .agent-name,
+        .agent-phone,
+        .agent-email {
+            font-size: 22px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .agent-info {
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+    
+        input[type="text"],
+        select,
+        textarea {
+            background-color: white;
+            padding: 10px;
+            width: 100%;
+        }
+    
+        label {
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .contact-intro,
+        .agent-name,
+        .agent-phone,
+        .agent-email,
+        .api-property-form-field label {
+            color: #252525;
+        }
+
+        &.white-contact-form {
+            .contact-intro,
+            .agent-name,
+            .agent-phone,
+            .agent-email,
+            .api-property-form-field label {
+                color: white;
+            }
+        }
+    }
+
+    .api-property-form-field + .api-property-form-field {
+        margin-top: 15px;
+    }
+
+    .button-api-listing {
+        font-size: 18px;
+        padding: 15px 25px;
+        font-weight: 700;
+        color: var(--button-text-color);
+        background-color: var(--button-color);
+        font-family: 'Arial', sans-serif;
+        border-radius: 6px;
+        text-transform: uppercase;
+        margin-top: 15px;
+    }
+
+    .api-property-description {
+        width: 100%;
+        padding-top: 15px;
+    }
+
+    .api-property-details {
+        list-style: none;
+        margin-bottom: 30px;
+        padding: 0;
+
+        li {
+            display: block;
+            width: 100%;
+            padding: 15px 0;
+            border-bottom: 2px solid #ccc;
+        }
+    }
+
+    .button-api-listing {
+        font-size: 18px;
+        padding: 15px 25px;
+        font-weight: 700;
+        color: var(--contact-form-button-text-color);
+        background-color: var(--contact-form-button-color);
+        font-family: 'Arial', sans-serif;
+        border-radius: 6px;
+        text-transform: uppercase;
+        margin-top: 15px;
+    }
+}

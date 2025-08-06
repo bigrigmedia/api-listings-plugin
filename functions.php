@@ -130,8 +130,8 @@ class MyCustomPlugin {
      */
     public function add_admin_menu() {
         add_options_page(
-            __('My Custom Plugin Settings', 'my-custom-plugin'),
-            __('My Custom Plugin', 'my-custom-plugin'),
+            __('API Listings Settings', 'my-custom-plugin'),
+            __('API Listings', 'my-custom-plugin'),
             'manage_options',
             'my-custom-plugin',
             array($this, 'admin_page')
@@ -147,8 +147,8 @@ class MyCustomPlugin {
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             <form method="post" action="options.php">
                 <?php
-                settings_fields('my_custom_plugin_settings');
-                do_settings_sections('my_custom_plugin_settings');
+                settings_fields('api_listings_plugin_settings');
+                do_settings_sections('api_listings_plugin_settings');
                 submit_button();
                 ?>
             </form>
@@ -160,20 +160,110 @@ class MyCustomPlugin {
      * Initialize admin settings
      */
     public function admin_init() {
-        register_setting('my_custom_plugin_settings', 'my_custom_plugin_option');
-        
         add_settings_section(
             'my_custom_plugin_section',
             __('Plugin Settings', 'my-custom-plugin'),
             array($this, 'settings_section_callback'),
-            'my_custom_plugin_settings'
+            'api_listings_plugin_settings'
         );
+
+        register_setting('api_listings_plugin_settings', 'api_listings_property_id');
         
         add_settings_field(
-            'my_custom_plugin_field',
-            __('Example Setting', 'my-custom-plugin'),
+            'api_listings_property_id_field',
+            __('Property ID', 'my-custom-plugin'),
             array($this, 'settings_field_callback'),
-            'my_custom_plugin_settings',
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section'
+        );
+
+        // Settings for the card color
+        register_setting('api_listings_plugin_settings', 'api_listings_card_color');
+
+        add_settings_field(
+            'api_listings_card_color_field',
+            __('Listing Card Color', 'my-custom-plugin'),
+            array($this, 'card_color_picker_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section'
+        );
+
+        //Settings for the button color
+        register_setting('api_listings_plugin_settings', 'api_listings_button_color');
+
+        add_settings_field(
+            'api_listings_button_color_field',
+            __('Listing Card Button Color', 'my-custom-plugin'),
+            array($this, 'button_color_picker_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section'
+        );
+
+        //Settings for the button text color
+        register_setting('api_listings_plugin_settings', 'api_listings_button_text_color');
+
+        add_settings_field(
+            'api_listings_button_text_color_field',
+            __('Listing Card Button Text Color', 'my-custom-plugin'),
+            array($this, 'button_text_color_picker_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section'
+        );
+
+        // Settings for the card text color
+        register_setting('api_listings_plugin_settings', 'api_listings_card_text_white');
+
+        add_settings_field(
+            'api_listings_card_text_white_field',
+            __('White Text On Card', 'my-custom-plugin'),
+            array($this, 'card_text_white_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section'
+        );
+
+
+        //Settings for single listing page contact form background color
+        register_setting('api_listings_plugin_settings', 'api_listings_contact_form_color');
+
+        add_settings_field(
+            'api_listings_contact_form_color_field',
+            __('Contact Form Background Color', 'my-custom-plugin'),
+            array($this, 'contact_form_background_color_picker_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section'
+        );
+
+        //Settings for single listing page contact form button color
+        register_setting('api_listings_plugin_settings', 'api_listings_contact_form_button_color');
+
+        add_settings_field(
+            'api_listings_contact_form_button_color_field',
+            __('Contact Form Button Color', 'my-custom-plugin'),
+            array($this, 'contact_form_button_color_picker_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section'
+        );
+
+        //Settings for single listing page contact form button text color
+        register_setting('api_listings_plugin_settings', 'api_listings_contact_form_button_text_color');
+
+        add_settings_field(
+            'api_listings_contact_form_button_text_color_field',
+            __('Contact Form Button Text Color', 'my-custom-plugin'),
+            array($this, 'contact_form_button_text_color_picker_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section'
+        );
+
+
+        //Setting for the form text color
+        register_setting('api_listings_plugin_settings', 'api_listings_contact_form_text_white');
+
+        add_settings_field(
+            'api_listings_contact_form_text_white_field',
+            __('White Text On Contact Form', 'my-custom-plugin'),
+            array($this, 'contact_form_text_white_field_callback'),
+            'api_listings_plugin_settings',
             'my_custom_plugin_section'
         );
     }
@@ -182,15 +272,55 @@ class MyCustomPlugin {
      * Settings section callback
      */
     public function settings_section_callback() {
-        echo '<p>' . __('Configure your plugin settings below.', 'my-custom-plugin') . '</p>';
+        echo '<p>' . __('Configure the plugin settings below.', 'my-custom-plugin') . '</p>';
     }
     
     /**
-     * Settings field callback
+     * Settings fields callbacks
      */
     public function settings_field_callback() {
-        $option = get_option('my_custom_plugin_option', '');
-        echo '<input type="text" name="my_custom_plugin_option" value="' . esc_attr($option) . '" class="regular-text" />';
+        $option = get_option('api_listings_property_id', '');
+        echo '<input type="text" name="api_listings_property_id" value="' . esc_attr($option) . '" class="regular-text" />';
+    }
+
+    public function card_text_white_field_callback() {
+        $option = get_option('api_listings_card_text_white', false);
+        echo '<input type="checkbox" name="api_listings_card_text_white" value="1" ' . checked(1, $option, false) . ' />';
+    }
+
+    public function card_color_picker_field_callback() {
+        $option = get_option('api_listings_card_color', '#26bbe0');
+        echo '<input type="text" name="api_listings_card_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#26bbe0" />';
+    }
+    
+    public function button_color_picker_field_callback() {
+        $option = get_option('api_listings_button_color', '#287092');
+        echo '<input type="text" name="api_listings_button_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#287092" />';
+    }
+
+    public function button_text_color_picker_field_callback() {
+        $option = get_option('api_listings_button_text_color', '#ffffff');
+        echo '<input type="text" name="api_listings_button_text_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#ffffff" />';
+    }
+
+    public function contact_form_background_color_picker_field_callback() {
+        $option = get_option('api_listings_contact_form_color', '#8c9d66');
+        echo '<input type="text" name="api_listings_contact_form_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#8c9d66" />';
+    }
+
+    public function contact_form_button_color_picker_field_callback() {
+        $option = get_option('api_listings_contact_form_button_color', '#8c9d66');
+        echo '<input type="text" name="api_listings_contact_form_button_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#8c9d66" />';
+    }
+
+    public function contact_form_button_text_color_picker_field_callback() {
+        $option = get_option('api_listings_contact_form_button_text_color', '#ffffff');
+        echo '<input type="text" name="api_listings_contact_form_button_text_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#ffffff" />';
+    }
+
+    public function contact_form_text_white_field_callback() {
+        $option = get_option('api_listings_contact_form_text_white', false);
+        echo '<input type="checkbox" name="api_listings_contact_form_text_white" value="1" ' . checked(1, $option, false) . ' />';
     }
     
     /**
@@ -208,10 +338,11 @@ class MyCustomPlugin {
             MY_CUSTOM_PLUGIN_VERSION
         );
         
+        wp_enqueue_style('wp-color-picker');
         wp_enqueue_script(
             'my-custom-plugin-admin',
             MY_CUSTOM_PLUGIN_PLUGIN_URL . 'assets/js/admin.js',
-            array('jquery'),
+            array('jquery', 'wp-color-picker'),
             MY_CUSTOM_PLUGIN_VERSION,
             true
         );
@@ -229,22 +360,38 @@ class MyCustomPlugin {
     public function enqueue_scripts() {
         wp_enqueue_style(
             'my-custom-plugin-frontend',
-            MY_CUSTOM_PLUGIN_PLUGIN_URL . 'assets/css/frontend.css',
+            MY_CUSTOM_PLUGIN_PLUGIN_URL . 'dist/index.scss.css',
             array(),
             MY_CUSTOM_PLUGIN_VERSION
         );
 
         wp_enqueue_style(
-            'my-custom-plugin-shortcode',
-            MY_CUSTOM_PLUGIN_PLUGIN_URL . 'assets/css/shortcode.css',
+            'my-custom-plugin-print',
+            MY_CUSTOM_PLUGIN_PLUGIN_URL . 'assets/css/print.css',
             array(),
             MY_CUSTOM_PLUGIN_VERSION
+        );
+
+        //Enqueue Slick slider from CDN
+        wp_enqueue_style(
+            'slick-slider',
+            'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css',
+            array(),
+            '1.8.1'
+        );
+
+        wp_enqueue_script(
+            'slick-slider',
+            'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js',
+            array('jquery'),
+            '1.8.1',
+            true
         );
         
         wp_enqueue_script(
             'my-custom-plugin-frontend',
             MY_CUSTOM_PLUGIN_PLUGIN_URL . 'assets/js/frontend.js',
-            array('jquery'),
+            array('jquery', 'slick-slider'),
             MY_CUSTOM_PLUGIN_VERSION,
             true
         );
@@ -256,6 +403,10 @@ class MyCustomPlugin {
             MY_CUSTOM_PLUGIN_VERSION,
             true
         );
+
+        wp_localize_script('my-custom-plugin-shortcode', 'api_listings_plugin_settings', array(
+            'property_id' => get_option('api_listings_property_id', '')
+        ));
     }
 
     /**
@@ -314,13 +465,33 @@ class MyCustomPlugin {
     public function api_shortcode_callback($atts, $content = '') {
         $atts = shortcode_atts(array(
         ), $atts, 'api_listings_container');
+
+        $card_color = get_option('api_listings_card_color', '#26bbe0');
+        $button_color = get_option('api_listings_button_color', '#287092');
+        $button_text_color = get_option('api_listings_button_text_color', '#ffffff');
+        $card_text_white = get_option('api_listings_card_text_white', false) ? 'white-card' : '';
+        $section_id = 'api-listings-' . uniqid();
         
         ob_start();
         ?>
-        <div class="api-listings">
-            <div id="api-listings-container">
+        <div id="<?php echo esc_attr($section_id); ?>" class="api-listings">
+            <div id="api-listings-container" class="<?php echo esc_attr($card_text_white); ?>">
             </div>
+            
+            <?php if (!is_front_page()) : ?>
+                <div id="pagination-container">
+                    <a id="load-more-btn" style="display: none">Load More...</a>
+                </div>
+            <?php endif; ?>
         </div>
+
+        <style>
+            #<?php echo esc_attr($section_id); ?> {
+                --card-color: <?php echo esc_attr($card_color); ?>;
+                --button-color: <?php echo esc_attr($button_color); ?>;
+                --button-text-color: <?php echo esc_attr($button_text_color); ?>;
+            }
+        </style>
         <?php
         return ob_get_clean();
     }
