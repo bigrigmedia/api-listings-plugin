@@ -172,9 +172,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_property_id_field',
             __('Property ID', 'my-custom-plugin'),
-            array($this, 'settings_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_property_id',
+                'default' => ''
+            )
         );
 
         // Settings for the card color
@@ -183,9 +188,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_card_color_field',
             __('Listing Card Color', 'my-custom-plugin'),
-            array($this, 'card_color_picker_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_card_color',
+                'default' => '#26bbe0'
+            )
         );
 
         //Settings for the button color
@@ -194,9 +204,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_button_color_field',
             __('Listing Card Button Color', 'my-custom-plugin'),
-            array($this, 'button_color_picker_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_button_color',
+                'default' => '#287092'
+            )
         );
 
         //Settings for the button text color
@@ -205,9 +220,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_button_text_color_field',
             __('Listing Card Button Text Color', 'my-custom-plugin'),
-            array($this, 'button_text_color_picker_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_button_text_color',
+                'default' => '#ffffff'
+            )
         );
 
         // Settings for the card text color
@@ -216,9 +236,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_card_text_white_field',
             __('White Text On Card', 'my-custom-plugin'),
-            array($this, 'card_text_white_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'checkbox',
+                'option_name' => 'api_listings_card_text_white',
+                'default' => false
+            )
         );
 
 
@@ -228,9 +253,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_contact_form_color_field',
             __('Contact Form Background Color', 'my-custom-plugin'),
-            array($this, 'contact_form_background_color_picker_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_contact_form_color',
+                'default' => '#8c9d66'
+            )
         );
 
         //Settings for single listing page contact form button color
@@ -239,9 +269,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_contact_form_button_color_field',
             __('Contact Form Button Color', 'my-custom-plugin'),
-            array($this, 'contact_form_button_color_picker_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_contact_form_button_color',
+                'default' => '#8c9d66'
+            )
         );
 
         //Settings for single listing page contact form button text color
@@ -250,9 +285,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_contact_form_button_text_color_field',
             __('Contact Form Button Text Color', 'my-custom-plugin'),
-            array($this, 'contact_form_button_text_color_picker_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_contact_form_button_text_color',
+                'default' => '#ffffff'
+            )
         );
 
 
@@ -262,9 +302,14 @@ class MyCustomPlugin {
         add_settings_field(
             'api_listings_contact_form_text_white_field',
             __('White Text On Contact Form', 'my-custom-plugin'),
-            array($this, 'contact_form_text_white_field_callback'),
+            array($this, 'modular_settings_field_callback'),
             'api_listings_plugin_settings',
-            'my_custom_plugin_section'
+            'my_custom_plugin_section',
+            array(
+                'type' => 'checkbox',
+                'option_name' => 'api_listings_contact_form_text_white',
+                'default' => false
+            )
         );
     }
     
@@ -276,51 +321,22 @@ class MyCustomPlugin {
     }
     
     /**
-     * Settings fields callbacks
+     * Modular settings field callback
      */
-    public function settings_field_callback() {
-        $option = get_option('api_listings_property_id', '');
-        echo '<input type="text" name="api_listings_property_id" value="' . esc_attr($option) . '" class="regular-text" />';
-    }
-
-    public function card_text_white_field_callback() {
-        $option = get_option('api_listings_card_text_white', false);
-        echo '<input type="checkbox" name="api_listings_card_text_white" value="1" ' . checked(1, $option, false) . ' />';
-    }
-
-    public function card_color_picker_field_callback() {
-        $option = get_option('api_listings_card_color', '#26bbe0');
-        echo '<input type="text" name="api_listings_card_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#26bbe0" />';
-    }
-    
-    public function button_color_picker_field_callback() {
-        $option = get_option('api_listings_button_color', '#287092');
-        echo '<input type="text" name="api_listings_button_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#287092" />';
-    }
-
-    public function button_text_color_picker_field_callback() {
-        $option = get_option('api_listings_button_text_color', '#ffffff');
-        echo '<input type="text" name="api_listings_button_text_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#ffffff" />';
-    }
-
-    public function contact_form_background_color_picker_field_callback() {
-        $option = get_option('api_listings_contact_form_color', '#8c9d66');
-        echo '<input type="text" name="api_listings_contact_form_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#8c9d66" />';
-    }
-
-    public function contact_form_button_color_picker_field_callback() {
-        $option = get_option('api_listings_contact_form_button_color', '#8c9d66');
-        echo '<input type="text" name="api_listings_contact_form_button_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#8c9d66" />';
-    }
-
-    public function contact_form_button_text_color_picker_field_callback() {
-        $option = get_option('api_listings_contact_form_button_text_color', '#ffffff');
-        echo '<input type="text" name="api_listings_contact_form_button_text_color" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="#ffffff" />';
-    }
-
-    public function contact_form_text_white_field_callback() {
-        $option = get_option('api_listings_contact_form_text_white', false);
-        echo '<input type="checkbox" name="api_listings_contact_form_text_white" value="1" ' . checked(1, $option, false) . ' />';
+    public function modular_settings_field_callback($args) {
+        $option = get_option($args['option_name'], $args['default']);
+        
+        switch ($args['type']) {
+            case 'text':
+                echo '<input type="text" name="' . esc_attr($args['option_name']) . '" value="' . esc_attr($option) . '" class="regular-text" />';
+                break;
+            case 'checkbox':
+                echo '<input type="checkbox" name="' . esc_attr($args['option_name']) . '" value="1" ' . checked(1, $option, false) . ' />';
+                break;
+            case 'color':
+                echo '<input type="text" name="' . esc_attr($args['option_name']) . '" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="' . esc_attr($args['default']) . '" />';
+                break;
+        }
     }
     
     /**
