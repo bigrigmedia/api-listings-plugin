@@ -138,6 +138,15 @@ $section_id = 'single-api-listings-' . uniqid();
             'Listing Type' => $sos
         ];
 
+        $form_settings = [
+            'form_action' => get_option('api_listings_contact_form_action', ''),
+            'contact_method_field_id' => get_option('api_listings_contact_method_field_id', ''),
+            'move_in_date_field_id' => get_option('api_listings_move_in_date_field_id', ''),
+            'referral_source_field_id' => get_option('api_listings_referral_source_field_id', ''),
+            'message_field_id' => get_option('api_listings_message_field_id', ''),
+            'hidden_field_id' => get_option('api_listings_hidden_field_id', ''),
+        ];
+
         // Meta
         $tagline = $acf_fields['property_tagline'] ?? '';
         $community = $acf_fields['property_community_type'] ?? '';
@@ -271,154 +280,156 @@ $section_id = 'single-api-listings-' . uniqid();
                         <a class="agent-email" href="mailto:<?= $sales_email ?>"><?= $sales_email ?></a>
                     </p>
                     <script type="text/javascript">
-                    function checkForm(form) {
-                        if (form.first.value == '') {
-                            alert('Please complete required fields');
-                            return false;
-                        }
-                        if (form.last.value == '') {
-                            alert('Please complete required fields');
-                            return false;
-                        }
-                        if (form.phone.value == '') {
-                            alert('Please complete required fields');
-                            return false;
-                        }
-                        var emailRegex = /^.+@.+\..{2,6}$/;
-                        if (form.email) {
-                            if (form.email.value && !emailRegex.test(form.email.value)) {
-                                alert('Please enter a valid email address');
-                                form.email.focus();
+                        let form_settings = <?= json_encode($form_settings) ?>;
+                        
+                        function checkForm(form) {
+                            if (form.first.value == '') {
+                                alert('Please complete required fields');
                                 return false;
                             }
-                        }
-                        if (form.email.value == '') {
-                            alert('Please complete required fields');
-                            return false;
-                        }
-                        if (form.f101684.value == '') {
-                            alert('Please complete required fields');
-                            return false;
-                        }
-                        if (form.f98140.value == '') {
-                            alert('Please complete required fields');
-                            return false;
-                        }
-                        if (form.f101471.value == '') {
-                            alert('Please complete required fields');
-                            return false;
-                        }
-                
-                        return true;
-                    }
-                    </script>
-                    <form name="openleads" method="post" action="https://radanteestates.openleads.com/form/13308/" onsubmit="return checkForm(this);">
-                    <div class="api-property-form-field">
-                        <label for="first">First Name *</label>
-                        <input type="text" size="40" maxlength="200" id="first" name="first" value="" required="">
-                    </div>
-
-                    <div class="api-property-form-field">
-                        <label for="last">Last Name *</label>
-                        <input type="text" size="40" maxlength="200" id="last" name="last" value="" required="">
-                    </div>
-                    <div class="api-property-form-field">
-                        <label for="phone">Phone *</label>
-                        <input type="text" size="40" maxlength="200" id="phone" name="phone" value="" required="">
-                    </div>
-                    <div class="api-property-form-field">
-                        <label for="email">Email</label>
-                        <input type="text" size="40" maxlength="200" id="email" name="email" value="">
-                    </div>
-
-                    <div class="api-property-form-field">
-                        <label class="form-check-label" for="f101684_0">Preferred Contact Method <span class="required">*</span></label>
-
-                        <div class="form-check">
-                            <label>Phone Call</label>
-                            <input class="form-check-input" type="checkbox" name="f101684[]" id="f101684_0" value="Phone Call" >
-                        </div>
-                        <div class="form-check">
-                            <label>Email</label>
-                            <input class="form-check-input" type="checkbox" name="f101684[]" id="f101684_1" value="Email" >
-                        </div>
-                        <div class="form-check">
-                            <label>Text Message</label>
-                            <input class="form-check-input" type="checkbox" name="f101684[]" id="f101684_2" value="Text Message" >
-                        </div>
-                    </div>
-
-                    <div class="api-property-form-field">
-                        <label for="f98140">How soon are you looking to move? <span class="required">*</span></label>
-                        <select id="f98140" name="f98140">
-                            <option value=""></option>
-                            <option value="1-3 Months">1-3 Months</option>
-                            <option value="3-6 Months">3-6 Months</option>
-                            <option value="6-9 Months">6-9 Months</option>
-                            <option value="9-12 Months">9-12 Months</option>
-                            <option value="Unknown">Unknown</option>
-                        </select>
-                    </div>
-
-                    <div class="api-property-form-field">
-                        <label for="f101471">How did you hear about us? <span class="required">*</span></label>
-                        <select id="f101471" name="f101471">
-                            <option value=""></option>
-                            <option value="Google">Google</option>
-                            <option value="MH Village">MH Village</option>
-                            <option value="Retirenet.com">Retirenet.com</option>
-                            <option value="Zillow">Zillow</option>
-                            <option value="Social Media">Social Media</option>
-                            <option value="Drive By">Drive By</option>
-                            <option value="TV">TV</option>
-                            <option value="Realtor">Realtor</option>
-                            <option value="Newspaper/Magazine">Newspaper/Magazine</option>
-                            <option value="Resident Referral">Resident Referral</option>
-                            <option value="Event">Event</option>
-                            <option value="MLS">MLS</option>
-                            <option value="Radio">Radio</option>
-                            <option value="RV'r">RV'r</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-
-                    <div class="api-property-form-field">
-                        <label for="f60392">Message</label>
-                        <textarea id="f60392" name="f60392" cols="50" rows="10" style="height: 200px;"></textarea>
-                    </div>
-                    <input type="hidden" size="20" id="f60400" name="f60400" value="<?= $property_n . '/' . $listdate ?>">
-                    <script src='https://www.google.com/recaptcha/api.js'></script>
-                    <div class="g-recaptcha" data-sitekey="6LfwgyAUAAAAADiQCNEsyGu26Wi1yqJ8zyzUli8W"></div>
-                    <input type="submit" class="button-api-listing" name="send" value="Send" id="check">
-                    <style>
-                                .x-oh{
-                                    /* IE 8 */
-                                    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-
-                                    /* IE 5-7 */
-                                    filter: alpha(opacity=0);
-
-                                    /* Netscape */
-                                    -moz-opacity: 0;
-
-                                    /* Safari 1.x */
-                                    -khtml-opacity: 0;
-
-                                    /* Good browsers */
-                                    opacity: 0;
-
-                                    position: absolute;
-                                    top: 0;
-                                    left: 0;
-                                    height: 0;
-                                    width: 0;
-                                    z-index: -1;
+                            if (form.last.value == '') {
+                                alert('Please complete required fields');
+                                return false;
+                            }
+                            if (form.phone.value == '') {
+                                alert('Please complete required fields');
+                                return false;
+                            }
+                            var emailRegex = /^.+@.+\..{2,6}$/;
+                            if (form.email) {
+                                if (form.email.value && !emailRegex.test(form.email.value)) {
+                                    alert('Please enter a valid email address');
+                                    form.email.focus();
+                                    return false;
                                 }
-                            </style>
-                            <label class="x-oh" for="name"></label>
-                            <input class="x-oh" autocomplete="off" type="text" id="xo-name" name="xoname" placeholder="Your name here">
-                            <label class="x-oh" for="email"></label>
-                            <input class="x-oh" autocomplete="off" type="email" id="xo-email" name="xoemail" placeholder="Your e-mail here">
+                            }
+                            if (form.email.value == '') {
+                                alert('Please complete required fields');
+                                return false;
+                            }
+                            if (form[form_settings['contact_method_field_id']].value == '') {
+                                alert('Please complete required fields');
+                                return false;
+                            }
+                            if (form[form_settings['move_in_date_field_id']].value == '') {
+                                alert('Please complete required fields');
+                                return false;
+                            }
+                            if (form[form_settings['referral_source_field_id']].value == '') {
+                                alert('Please complete required fields');
+                                return false;
+                            }
+                    
+                            return true;
+                        }
+                    </script>
+                    <form name="openleads" method="post" action="<?= $form_settings['form_action'] ?>" onsubmit="return checkForm(this);">
+                        <div class="api-property-form-field">
+                            <label for="first">First Name *</label>
+                            <input type="text" size="40" maxlength="200" id="first" name="first" value="" required="">
+                        </div>
+
+                        <div class="api-property-form-field">
+                            <label for="last">Last Name *</label>
+                            <input type="text" size="40" maxlength="200" id="last" name="last" value="" required="">
+                        </div>
+                        <div class="api-property-form-field">
+                            <label for="phone">Phone *</label>
+                            <input type="text" size="40" maxlength="200" id="phone" name="phone" value="" required="">
+                        </div>
+                        <div class="api-property-form-field">
+                            <label for="email">Email</label>
+                            <input type="text" size="40" maxlength="200" id="email" name="email" value="">
+                        </div>
+
+                        <div class="api-property-form-field">
+                            <label class="form-check-label" for="<?= $form_settings['contact_method_field_id'] ?>_0">Preferred Contact Method <span class="required">*</span></label>
+
+                            <div class="form-check">
+                                <label>Phone Call</label>
+                                <input class="form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_0" value="Phone Call" >
+                            </div>
+                            <div class="form-check">
+                                <label>Email</label>
+                                <input class="form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_1" value="Email" >
+                            </div>
+                            <div class="form-check">
+                                <label>Text Message</label>
+                                <input class="form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_2" value="Text Message" >
+                            </div>
+                        </div>
+
+                        <div class="api-property-form-field">
+                            <label for="<?= $form_settings['move_in_date_field_id'] ?>">How soon are you looking to move? <span class="required">*</span></label>
+                            <select id="<?= $form_settings['move_in_date_field_id'] ?>" name="<?= $form_settings['move_in_date_field_id'] ?>">
+                                <option value=""></option>
+                                <option value="1-3 Months">1-3 Months</option>
+                                <option value="3-6 Months">3-6 Months</option>
+                                <option value="6-9 Months">6-9 Months</option>
+                                <option value="9-12 Months">9-12 Months</option>
+                                <option value="Unknown">Unknown</option>
+                            </select>
+                        </div>
+
+                        <div class="api-property-form-field">
+                            <label for="<?= $form_settings['referral_source_field_id'] ?>">How did you hear about us? <span class="required">*</span></label>
+                            <select id="<?= $form_settings['referral_source_field_id'] ?>" name="<?= $form_settings['referral_source_field_id'] ?>">
+                                <option value=""></option>
+                                <option value="Google">Google</option>
+                                <option value="MH Village">MH Village</option>
+                                <option value="Retirenet.com">Retirenet.com</option>
+                                <option value="Zillow">Zillow</option>
+                                <option value="Social Media">Social Media</option>
+                                <option value="Drive By">Drive By</option>
+                                <option value="TV">TV</option>
+                                <option value="Realtor">Realtor</option>
+                                <option value="Newspaper/Magazine">Newspaper/Magazine</option>
+                                <option value="Resident Referral">Resident Referral</option>
+                                <option value="Event">Event</option>
+                                <option value="MLS">MLS</option>
+                                <option value="Radio">Radio</option>
+                                <option value="RV'r">RV'r</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="api-property-form-field">
+                            <label for="<?= $form_settings['message_field_id'] ?>">Message</label>
+                            <textarea id="<?= $form_settings['message_field_id'] ?>" name="<?= $form_settings['message_field_id'] ?>" cols="50" rows="10" style="height: 200px;"></textarea>
+                        </div>
+                        <input type="hidden" size="20" id="<?= $form_settings['hidden_field_id'] ?>" name="<?= $form_settings['hidden_field_id'] ?>" value="<?= $property_n . '/' . $listdate ?>">
+                        <script src='https://www.google.com/recaptcha/api.js'></script>
+                        <div class="g-recaptcha" data-sitekey="6LfwgyAUAAAAADiQCNEsyGu26Wi1yqJ8zyzUli8W"></div>
+                        <input type="submit" class="button-api-listing" name="send" value="Send" id="check">
+                        <style>
+                            .x-oh{
+                                /* IE 8 */
+                                -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+
+                                /* IE 5-7 */
+                                filter: alpha(opacity=0);
+
+                                /* Netscape */
+                                -moz-opacity: 0;
+
+                                /* Safari 1.x */
+                                -khtml-opacity: 0;
+
+                                /* Good browsers */
+                                opacity: 0;
+
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                height: 0;
+                                width: 0;
+                                z-index: -1;
+                            }
+                        </style>
+                        <label class="x-oh" for="name"></label>
+                        <input class="x-oh" autocomplete="off" type="text" id="xo-name" name="xoname" placeholder="Your name here">
+                        <label class="x-oh" for="email"></label>
+                        <input class="x-oh" autocomplete="off" type="email" id="xo-email" name="xoemail" placeholder="Your e-mail here">
                     </form>
                 </div>
             </div>

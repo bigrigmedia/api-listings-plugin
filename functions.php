@@ -167,6 +167,7 @@ class MyCustomPlugin {
             'api_listings_plugin_settings'
         );
 
+        //Settings for the property ID
         register_setting('api_listings_plugin_settings', 'api_listings_property_id');
         
         add_settings_field(
@@ -182,7 +183,7 @@ class MyCustomPlugin {
             )
         );
 
-        // Settings for the card color
+        //Settings for the card color
         register_setting('api_listings_plugin_settings', 'api_listings_card_color');
 
         add_settings_field(
@@ -230,7 +231,7 @@ class MyCustomPlugin {
             )
         );
 
-        // Settings for the card text color
+        //Settings for the card text color
         register_setting('api_listings_plugin_settings', 'api_listings_card_text_white');
 
         add_settings_field(
@@ -309,6 +310,102 @@ class MyCustomPlugin {
                 'type' => 'checkbox',
                 'option_name' => 'api_listings_contact_form_text_white',
                 'default' => false
+            )
+        );
+
+        //Setting for the form action
+        register_setting('api_listings_plugin_settings', 'api_listings_contact_form_action');
+
+        add_settings_field(
+            'api_listings_contact_form_action_field',
+            __('Contact Form Action', 'my-custom-plugin'),
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_contact_form_action',
+                'default' => ''
+            )
+        );
+
+        //Setting for the contact method field ID
+        register_setting('api_listings_plugin_settings', 'api_listings_contact_method_field_id');
+
+        add_settings_field(
+            'api_listings_contact_method_field_id_field',
+            __('Contact Method Field ID', 'my-custom-plugin'),
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_contact_method_field_id',
+                'default' => ''
+            )
+        );
+
+        //Setting for the move in date field ID
+        register_setting('api_listings_plugin_settings', 'api_listings_move_in_date_field_id');
+
+        add_settings_field(
+            'api_listings_move_in_date_field_id_field',
+            __('Move In Date Field ID', 'my-custom-plugin'),
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_move_in_date_field_id',
+                'default' => ''
+            )
+        );
+
+        //Setting for the referral source field ID
+        register_setting('api_listings_plugin_settings', 'api_listings_referral_source_field_id');
+
+        add_settings_field(
+            'api_listings_referral_source_field_id_field',
+            __('Referral Source Field ID', 'my-custom-plugin'),
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_referral_source_field_id',
+                'default' => ''
+            )
+        );
+
+        //Setting for the message field ID
+        register_setting('api_listings_plugin_settings', 'api_listings_message_field_id');
+
+        add_settings_field(
+            'api_listings_message_field_id_field',
+            __('Message Field ID', 'my-custom-plugin'),
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_message_field_id',
+                'default' => ''
+            )
+        );
+
+        //Settings for the hidden field ID
+        register_setting('api_listings_plugin_settings', 'api_listings_hidden_field_id');
+
+        add_settings_field(
+            'api_listings_hidden_field_id_field',
+            __('Hidden Field ID', 'my-custom-plugin'),
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'my_custom_plugin_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_hidden_field_id',
+                'default' => ''
             )
         );
     }
