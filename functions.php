@@ -536,6 +536,7 @@ class BrmApiListingsPlugin {
      */
     public function register_shortcodes() {
         add_shortcode('api_listings_container', array($this, 'api_shortcode_callback'));
+        add_shortcode('api_listings_details', array($this, 'api_listings_details_callback')); // Add this line
     }
     
     /**
@@ -572,6 +573,19 @@ class BrmApiListingsPlugin {
             }
         </style>
         <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode callback for custom template
+     */
+    public function api_listings_details_callback($atts, $content = '') {
+        $atts = shortcode_atts(array(
+            // Define any default attributes here
+        ), $atts, 'api_listings_details');
+
+        ob_start();
+        include plugin_dir_path(__FILE__) . 'templates/listing-details.php'; // Adjust the path if necessary
         return ob_get_clean();
     }
 }
