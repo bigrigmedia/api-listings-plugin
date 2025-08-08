@@ -71,6 +71,9 @@ class BrmApiListingsPlugin {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('init', array($this, 'register_shortcodes'));
 
+        // Dequeue conflicting scripts - Use large number to ensure it runs last
+        add_action('wp_enqueue_scripts', array($this, 'dequeue_conflicting_scripts'), 200);
+
         // Add page templates
         add_filter('theme_page_templates', array($this, 'register_page_templates'));
         add_filter('template_include', array($this, 'add_page_template'));
@@ -451,6 +454,15 @@ class BrmApiListingsPlugin {
             'nonce' => wp_create_nonce('brm_api_listings_plugin_nonce')
         ));
     }
+
+    /**
+     * Dequeue conflicting scripts
+     */
+    public function dequeue_conflicting_scripts() {
+        //Dequeue the Sage Unit API scripts to prevent conflicts
+        wp_dequeue_script('sage/unit-api.js');
+        wp_dequeue_script('sage/unit-api-owner.js');
+    }
     
     /**
      * Enqueue frontend scripts and styles
@@ -554,13 +566,30 @@ class BrmApiListingsPlugin {
         
         ob_start();
         ?>
-        <div id="<?php echo esc_attr($section_id); ?>" class="api-listings">
-            <div id="api-listings-container" class="<?php echo esc_attr($card_text_white); ?>">
+        <div id="<?php echo esc_attr($section_id); ?>" class="plugin-api-listings">
+            <form class="sort-form">
+                <div>
+                    <select id="listing-sos-number" name="sos_number">
+                        <option value="">Filter by Home Type</option>
+                        <option value="Community Owned - New">New Construction</option>
+                        <option value="used">Previously Owned</option>
+                    </select>
+                </div>
+                <div style="display: none;">
+                    <label for="listing-sort-order">Sort by Date:</label>
+                    <select id="listing-sort-order" name="sortOrder" style="padding: 0;">
+                        <option value="newest">Descending</option>
+                        <option value="oldest">Ascending</option>
+                    </select>
+                </div>
+            </form>
+
+            <div id="plugin-api-listings-container" class="<?php echo esc_attr($card_text_white); ?>">
             </div>
             
             <?php if (!is_front_page()) : ?>
-                <div id="pagination-container">
-                    <a id="load-more-btn" style="display: none">Load More...</a>
+                <div id="listings-pagination-container">
+                    <a id="load-listings-btn" class="button-api-listing" style="display: none">Load More...</a>
                 </div>
             <?php endif; ?>
         </div>

@@ -1,10 +1,42 @@
-.api-listings {
+.plugin-api-listings {
     max-width: 1270px;
     margin: 0 auto;
     padding: 15px 30px;
+
+    .sort-form {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 1rem;
+        margin-bottom: 15px;
+        select {
+            background-color: #fff;
+            border-width: 1px;
+            height: 45px;
+            color: #252525;
+            border-color: #252525;
+            width: 300px;
+            max-width: 100%;
+            height: 45px;
+        }
+    }
+
+    .button-api-listing {
+        font-size: 18px;
+        padding: 15px 25px;
+        font-weight: 700;
+        color: var(--button-text-color);
+        background-color: var(--button-color);
+        font-family: 'Arial', sans-serif;
+        border-radius: 6px;
+        text-transform: uppercase;
+        margin-top: 15px;
+        line-height: 1;
+    }
 }
 
-#api-listings-container {
+#plugin-api-listings-container {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
@@ -22,9 +54,11 @@
     .unit-data {
         min-height: 350px;
         padding: 15px;
+        text-align: left;
     }
 
-    .meta-data {
+    .meta-data,
+    .meta-data p {
         font-size: 20px;
         margin-top: 15px;
         color: #252525;
@@ -62,6 +96,7 @@
 
     .reduced-price {
         background-color: white;
+        color: #174579;
         position: absolute;
         top: 30px;
         padding: 5px 20px;
@@ -77,20 +112,9 @@
         font-family: 'Arial', sans-serif;
     }
 
-    .button-api-listing {
-        font-size: 18px;
-        padding: 15px 25px;
-        font-weight: 700;
-        color: var(--button-text-color);
-        background-color: var(--button-color);
-        font-family: 'Arial', sans-serif;
-        border-radius: 6px;
-        text-transform: uppercase;
-        margin-top: 15px;
-    }
-
     &.white-card {
         .meta-data,
+        .meta-data p,
         .unit-price,
         .listing-number,
         .list-date,
