@@ -171,6 +171,22 @@ class BrmApiListingsPlugin {
             )
         );
 
+        //Settings for the default listing image
+        register_setting('api_listings_plugin_settings', 'api_listings_branding_image');
+
+        add_settings_field(
+            'api_listings_branding_image_field',
+            'Branding Image',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'api_listings_settings_section',
+            array(
+                'type' => 'image',
+                'option_name' => 'api_listings_branding_image',
+                'default' => ''
+            )
+        );
+
         //Settings for the card color
         register_setting('api_listings_plugin_settings', 'api_listings_card_color');
 
@@ -396,13 +412,32 @@ class BrmApiListingsPlugin {
                 'default' => ''
             )
         );
+
+        //Settings for the recaptcha site key
+        register_setting('api_listings_plugin_settings', 'api_listings_recaptcha_site_key');
+
+        add_settings_field(
+            'api_listings_recaptcha_site_key_field',
+            'Recaptcha Site Key',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'api_listings_settings_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_recaptcha_site_key',
+                'default' => ''
+            )
+        );
     }
     
     /**
      * Settings section callback
      */
     public function settings_section_callback() {
-        echo '<p>Configure the plugin settings below.</p>';
+        echo '
+        <p>Configure the plugin settings below.</p>
+        <p>Use the shortcode <code>[api_listings_cards]</code> to display the listings cards on your page.</p>
+        <p>Use the shortcode <code>[api_listing_details]</code> to display the listing details on your page.</p>';
     }
     
     /**
@@ -421,6 +456,22 @@ class BrmApiListingsPlugin {
             case 'color':
                 echo '<input type="text" name="' . esc_attr($args['option_name']) . '" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="' . esc_attr($args['default']) . '" />';
                 break;
+            case 'image':
+                $image_id = $option;
+                $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
+                echo '<div class="api-plugin-image-field">';
+                echo '<input type="hidden" name="' . esc_attr($args['option_name']) . '" id="' . esc_attr($args['option_name']) . '" value="' . esc_attr($image_id) . '" />';
+                echo '<div class="image-preview" style="margin-bottom: 10px;">';
+                if ($image_url) {
+                    echo '<img src="' . esc_url($image_url) . '" style="max-width: 200px; max-height: 200px; display: block;" />';
+                }
+                echo '</div>';
+                echo '<button type="button" class="button api-plugin-upload-image" data-field="' . esc_attr($args['option_name']) . '">' . (__('Select Image', 'textdomain')) . '</button>';
+                if ($image_id) {
+                    echo ' <button type="button" class="button api-plugin-remove-image" data-field="' . esc_attr($args['option_name']) . '">' . (__('Remove Image', 'textdomain')) . '</button>';
+                }
+                echo '</div>';
+                break;
         }
     }
     
@@ -431,6 +482,9 @@ class BrmApiListingsPlugin {
         if ('settings_page_brm-api-listings' !== $hook) {
             return;
         }
+        
+        // Enqueue WordPress media uploader
+        wp_enqueue_media();
         
         wp_enqueue_style(
             'brm-api-listings-plugin-admin',
@@ -547,16 +601,16 @@ class BrmApiListingsPlugin {
      * Register shortcodes
      */
     public function register_shortcodes() {
-        add_shortcode('api_listings_container', array($this, 'api_shortcode_callback'));
-        add_shortcode('api_listings_details', array($this, 'api_listings_details_callback')); // Add this line
+        add_shortcode('api_listings_cards', array($this, 'api_listings_cards_callback'));
+        add_shortcode('api_listing_details', array($this, 'api_listing_details_callback'));
     }
     
     /**
      * Shortcode callback
      */
-    public function api_shortcode_callback($atts, $content = '') {
+    public function api_listings_cards_callback($atts, $content = '') {
         $atts = shortcode_atts(array(
-        ), $atts, 'api_listings_container');
+        ), $atts, 'api_listings_cards');
 
         $card_color = get_option('api_listings_card_color', '#26bbe0');
         $button_color = get_option('api_listings_button_color', '#287092');
@@ -608,10 +662,10 @@ class BrmApiListingsPlugin {
     /**
      * Shortcode callback for custom template
      */
-    public function api_listings_details_callback($atts, $content = '') {
+    public function api_listing_details_callback($atts, $content = '') {
         $atts = shortcode_atts(array(
             // Define any default attributes here
-        ), $atts, 'api_listings_details');
+        ), $atts, 'api_listing_details');
 
         ob_start();
         include plugin_dir_path(__FILE__) . 'templates/listing-details.php'; // Adjust the path if necessary
@@ -625,6 +679,6 @@ BrmApiListingsPlugin::get_instance();
 /**
  * Helper function to get plugin instance
  */
-function my_custom_plugin() {
+function get_api_listings_plugin() {
     return BrmApiListingsPlugin::get_instance();
 }

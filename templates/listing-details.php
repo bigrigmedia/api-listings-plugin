@@ -145,6 +145,7 @@ $section_id = 'single-api-listings-' . uniqid();
             'referral_source_field_id' => get_option('api_listings_referral_source_field_id', ''),
             'message_field_id' => get_option('api_listings_message_field_id', ''),
             'hidden_field_id' => get_option('api_listings_hidden_field_id', ''),
+            'recaptcha_site_key' => get_option('api_listings_recaptcha_site_key', '6LfwgyAUAAAAADiQCNEsyGu26Wi1yqJ8zyzUli8W'),
         ];
 
         // Meta
@@ -399,7 +400,7 @@ $section_id = 'single-api-listings-' . uniqid();
                         </div>
                         <input type="hidden" size="20" id="<?= $form_settings['hidden_field_id'] ?>" name="<?= $form_settings['hidden_field_id'] ?>" value="<?= $property_n . '/' . $listdate ?>">
                         <script src='https://www.google.com/recaptcha/api.js'></script>
-                        <div class="g-recaptcha" data-sitekey="6LfwgyAUAAAAADiQCNEsyGu26Wi1yqJ8zyzUli8W"></div>
+                        <div class="g-recaptcha" data-sitekey="<?= $form_settings['recaptcha_site_key'] ?>"></div>
                         <input type="submit" class="button-api-listing" name="send" value="Send" id="check">
                         <style>
                             .x-oh{
@@ -441,7 +442,10 @@ $section_id = 'single-api-listings-' . uniqid();
 
 <section class="unit-api-print-container">
     <?php
-    $branding = get_field('branding', 'options');
+    $branding_image_id = get_option('api_listings_branding_image');
+
+    //Get image from ID
+    $branding_image = wp_get_attachment_image_url($branding_image_id, 'full');
 
     $website_url = get_bloginfo('url');
     $website_url = str_replace('http://', '', $website_url);
@@ -457,8 +461,8 @@ $section_id = 'single-api-listings-' . uniqid();
     <div class="container">
         <div class="property">
             <div class="print-header">
-                <?php if($branding): ?>
-                    <img class="print-logo" src="<?= $branding ?>" alt="<?= get_bloginfo('name') ?>"> 
+                <?php if($branding_image): ?>
+                    <img class="print-logo" src="<?= $branding_image ?>" alt="<?= get_bloginfo('name') ?>"> 
                 <?php endif; ?>
                 <strong class="print-website-url"><?= $website_url ?></strong>
             </div>
