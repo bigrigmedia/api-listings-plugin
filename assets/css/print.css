@@ -46,6 +46,24 @@
         padding-bottom: 0 !important;
     }
 
+    .section--split,
+    .section__content {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    @media (max-width: 1023px) {
+        .section--split,
+        .section__content {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+    }
+
+    .api-plugin-single-listing {
+        margin-top: 0 !important;
+    }
+
     .print-hidden {
         display: none;
     }
@@ -121,7 +139,7 @@
     }
 
     .print-details__item * {
-        font-size: 16px !important;
+        font-size: 14px !important;
         font-weight: 700 !important;
         color: #fff !important;
         line-height: 1.1;

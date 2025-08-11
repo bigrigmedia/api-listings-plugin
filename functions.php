@@ -68,7 +68,7 @@ class BrmApiListingsPlugin {
         }
         
         // Frontend hooks
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'), 110);
         add_action('init', array($this, 'register_shortcodes'));
 
         // Dequeue conflicting scripts - Use large number to ensure it runs last

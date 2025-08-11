@@ -7,7 +7,7 @@ $section_id = 'single-api-listings-' . uniqid();
 ?>
 
 
-<section id="<?php echo esc_attr($section_id); ?>" class="api-plugin-single-listing" style="margin-top: 45px;">
+<section id="<?php echo esc_attr($section_id); ?>" class="api-plugin-single-listing">
     <div class="single-listing-container">
         <?php
         //Check if GET paramter called 'id' is set
@@ -525,5 +525,9 @@ $section_id = 'single-api-listings-' . uniqid();
         --contact-form-color: <?php echo esc_attr($contact_form_color); ?>;
         --contact-form-button-color: <?php echo esc_attr($contact_form_button_color); ?>;
         --contact-form-button-text-color: <?php echo esc_attr($contact_form_button_text_color); ?>;
+    }
+
+    .api-plugin-single-listing {
+        margin-top: 45px;
     }
 </style>
