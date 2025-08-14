@@ -2,8 +2,8 @@
 /**
  * Simple logging functionality for the plugin
  * 
- * @package MyCustomPlugin
- * @since 1.0.0
+ * @package ListingsAPI
+ * @since 0.5
  */
 
 // Prevent direct access
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
  * @param string $context Optional context for the log entry
  * @return bool True if log was written successfully, false otherwise
  */
-function my_custom_plugin_log($message, $level = 'info', $context = '') {
+function api_listings_log($message, $level = 'info', $context = '') {
     // Create logs directory if it doesn't exist
     $log_dir = BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR . 'logs';
     if (!file_exists($log_dir)) {
@@ -58,27 +58,27 @@ function my_custom_plugin_log($message, $level = 'info', $context = '') {
 /**
  * Convenience function for info level logging
  */
-function my_custom_plugin_log_info($message, $context = '') {
-    return my_custom_plugin_log($message, 'info', $context);
+function api_listings_log_info($message, $context = '') {
+    return api_listings_log($message, 'info', $context);
 }
 
 /**
  * Convenience function for warning level logging
  */
-function my_custom_plugin_log_warning($message, $context = '') {
-    return my_custom_plugin_log($message, 'warning', $context);
+function api_listings_log_warning($message, $context = '') {
+    return api_listings_log($message, 'warning', $context);
 }
 
 /**
  * Convenience function for error level logging
  */
-function my_custom_plugin_log_error($message, $context = '') {
-    return my_custom_plugin_log($message, 'error', $context);
+function api_listings_log_error($message, $context = '') {
+    return api_listings_log($message, 'error', $context);
 }
 
 /**
  * Convenience function for debug level logging
  */
-function my_custom_plugin_log_debug($message, $context = '') {
-    return my_custom_plugin_log($message, 'debug', $context);
+function api_listings_log_debug($message, $context = '') {
+    return api_listings_log($message, 'debug', $context);
 } 
