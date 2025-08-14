@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
  */
 function my_custom_plugin_log($message, $level = 'info', $context = '') {
     // Create logs directory if it doesn't exist
-    $log_dir = MY_CUSTOM_PLUGIN_PLUGIN_DIR . 'logs';
+    $log_dir = BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR . 'logs';
     if (!file_exists($log_dir)) {
         if (!wp_mkdir_p($log_dir)) {
             return false;
