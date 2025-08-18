@@ -21,7 +21,7 @@ class Updater {
 
         //$this->plugin_slug   = dirname ( plugin_basename( __DIR__ ) );
         $this->plugin_slug   = 'listings-api';
-        $this->version       = '0.6';
+        $this->version       = '0.7';
         $this->cache_key     = 'legacy-listings-api-updater';
         $this->cache_allowed = false;
 
@@ -44,7 +44,7 @@ class Updater {
 
         if( false === $remote || ! $this->cache_allowed ) {
 
-            $remote = wp_remote_get( 'https://getindio.com/manifest.json', [
+            $remote = wp_remote_get( 'https://updates.bigriglabs.com/legacy-listings-plugin/manifest.json', [
                     'timeout' => 10,
                     'headers' => [
                         'Accept' => 'application/json'
