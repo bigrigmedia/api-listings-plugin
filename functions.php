@@ -3,7 +3,7 @@
  * Plugin Name: Home listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds a block for displaying home listings from an API and a page template for displaying listing details.
- * Version: 0.7
+ * Version: 0.8
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '0.7');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '0.8');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -434,6 +434,49 @@ class BrmApiListingsPlugin {
                 'default' => ''
             )
         );
+
+        //Settings for the details page top margin
+        register_setting('api_listings_plugin_settings', 'api_listings_details_page_margin');
+
+        add_settings_field(
+            'api_listings_details_page_margin_field',
+            'Details Page Top Margin',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'api_listings_settings_section',
+            array(
+                'type' => 'range',
+                'option_name' => 'api_listings_details_page_margin',
+                'default' => 0,
+                'min' => 0,
+                'max' => 400,
+                'step' => 5,
+                'unit' => 'px',
+                'description' => 'Set the top margin of the details page'
+            )
+        );
+
+        //Settings for the details page top margin on mobile
+        register_setting('api_listings_plugin_settings', 'api_listings_details_page_margin_mobile');
+
+        add_settings_field(
+            'api_listings_details_page_margin_mobile_field',
+            'Details Page Top Margin on Mobile',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'api_listings_settings_section',
+            array(
+                'type' => 'range',
+                'option_name' => 'api_listings_details_page_margin_mobile',
+                'default' => 0,
+                'min' => 0,
+                'max' => 400,
+                'step' => 5,
+                'unit' => 'px',
+                'description' => 'Set the top margin of the details page on mobile'
+            )
+        );
+        
     }
     
     /**
@@ -461,6 +504,26 @@ class BrmApiListingsPlugin {
                 break;
             case 'color':
                 echo '<input type="text" name="' . esc_attr($args['option_name']) . '" value="' . esc_attr($option) . '" class="api-plugin-color-picker" data-default-color="' . esc_attr($args['default']) . '" />';
+                break;
+            case 'range':
+                $min = isset($args['min']) ? $args['min'] : 0;
+                $max = isset($args['max']) ? $args['max'] : 100;
+                $step = isset($args['step']) ? $args['step'] : 1;
+                $unit = isset($args['unit']) ? $args['unit'] : '';
+                $description = isset($args['description']) ? $args['description'] : '';
+                
+                echo '<div class="api-plugin-range-field">';
+                echo '<input type="range" name="' . esc_attr($args['option_name']) . '" id="' . esc_attr($args['option_name']) . '" value="' . esc_attr($option) . '" min="' . esc_attr($min) . '" max="' . esc_attr($max) . '" step="' . esc_attr($step) . '" class="api-plugin-range-slider" />';
+                echo '<div class="range-display">';
+                echo '<span class="range-value">' . esc_html($option) . '</span>';
+                if ($unit) {
+                    echo '<span class="range-unit">' . esc_html($unit) . '</span>';
+                }
+                echo '</div>';
+                if ($description) {
+                    echo '<p class="description">' . esc_html($description) . '</p>';
+                }
+                echo '</div>';
                 break;
             case 'image':
                 $image_id = $option;

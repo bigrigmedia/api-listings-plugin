@@ -130,11 +130,26 @@
             background-color: white;
             padding: 10px;
             width: 100%;
+            color: #252525;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .api-property-form-check {
+            display: flex;
+            flex-flow: row;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
         }
     
         label {
             font-size: 16px;
             text-transform: uppercase;
+            font-family: 'Arial', sans-serif;
         }
 
         .contact-intro,
@@ -176,6 +191,10 @@
     .api-property-description {
         width: 100%;
         padding-top: 15px;
+    }
+
+    .api-property-details-title {
+        font-size: 22px;
     }
 
     .api-property-details {

@@ -229,7 +229,7 @@ $section_id = 'single-api-listings-' . uniqid();
                             <?php endif; ?>
 
                             <?php if ($details): ?>
-                            <h5 class="">Property Details</h5>
+                            <h5 class="api-property-details-title">Property Details</h5>
                             <ul class="api-property-details">
                                 <?php foreach ($details as $key => $detail): ?>
                                     <?php if ($detail): ?>
@@ -344,19 +344,19 @@ $section_id = 'single-api-listings-' . uniqid();
                         </div>
 
                         <div class="api-property-form-field">
-                            <label class="form-check-label" for="<?= $form_settings['contact_method_field_id'] ?>_0">Preferred Contact Method <span class="required">*</span></label>
+                            <label class="api-property-form-check-label" for="<?= $form_settings['contact_method_field_id'] ?>_0">Preferred Contact Method <span class="required">*</span></label>
 
-                            <div class="form-check">
+                            <div class="api-property-form-check">
                                 <label>Phone Call</label>
-                                <input class="form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_0" value="Phone Call" >
+                                <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_0" value="Phone Call" >
                             </div>
-                            <div class="form-check">
+                            <div class="api-property-form-check">
                                 <label>Email</label>
-                                <input class="form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_1" value="Email" >
+                                <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_1" value="Email" >
                             </div>
-                            <div class="form-check">
+                            <div class="api-property-form-check">
                                 <label>Text Message</label>
-                                <input class="form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_2" value="Text Message" >
+                                <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_2" value="Text Message" >
                             </div>
                         </div>
 
@@ -518,6 +518,8 @@ $section_id = 'single-api-listings-' . uniqid();
     $contact_form_color = get_option('api_listings_contact_form_color', '#26bbe0');
     $contact_form_button_color = get_option('api_listings_contact_form_button_color', '#287092');
     $contact_form_button_text_color = get_option('api_listings_contact_form_button_text_color', '#ffffff');
+    $details_page_top_margin = get_option('api_listings_details_page_margin', 0);
+    $details_page_top_margin_mobile = get_option('api_listings_details_page_margin_mobile', 0);
 ?>
 
 <style>
@@ -528,6 +530,12 @@ $section_id = 'single-api-listings-' . uniqid();
     }
 
     .api-plugin-single-listing {
-        margin-top: 45px;
+        margin-top: <?php echo esc_attr($details_page_top_margin); ?>px;
+    }
+
+    @media (max-width: 1023px) {
+        .api-plugin-single-listing {
+            margin-top: <?php echo esc_attr($details_page_top_margin_mobile); ?>px;
+        }
     }
 </style>

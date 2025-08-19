@@ -2,6 +2,14 @@ jQuery(document).ready(function($){
     // Initialize color picker
     $('.api-plugin-color-picker').wpColorPicker();
     
+    // Initialize range sliders
+    $('.api-plugin-range-slider').on('input', function() {
+        var slider = $(this);
+        var value = slider.val();
+        var rangeDisplay = slider.siblings('.range-display').find('.range-value');
+        rangeDisplay.text(value);
+    });
+    
     // Handle image upload
     $(document).on('click', '.api-plugin-upload-image', function(e) {
         e.preventDefault();
