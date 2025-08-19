@@ -3,7 +3,7 @@
  * Plugin Name: Home listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds a block for displaying home listings from an API and a page template for displaying listing details.
- * Version: 0.8
+ * Version: 0.9
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '0.8');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '0.9');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -690,6 +690,7 @@ class BrmApiListingsPlugin {
         ob_start();
         ?>
         <div id="<?php echo esc_attr($section_id); ?>" class="plugin-api-listings">
+            <?php if (!is_front_page()) : ?>
             <form class="sort-form">
                 <div>
                     <select id="listing-sos-number" name="sos_number">
@@ -706,8 +707,9 @@ class BrmApiListingsPlugin {
                     </select>
                 </div>
             </form>
+            <?php endif; ?>
 
-            <div id="plugin-api-listings-container" class="<?php echo esc_attr($card_text_white); ?>">
+            <div id="plugin-api-listings-container" <?php if (is_front_page()) { echo 'data-home="true"'; } ?> class="<?php echo esc_attr($card_text_white); ?>">
             </div>
             
             <?php if (!is_front_page()) : ?>
