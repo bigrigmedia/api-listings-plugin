@@ -458,8 +458,8 @@ $section_id = 'single-api-listings-' . uniqid();
     }
     ?>
 
-    <div class="container">
-        <div class="property">
+    <div class="api-print-container">
+        <div class="property-api-inner">
             <div class="print-header">
                 <?php if($branding_image): ?>
                     <img class="print-logo" src="<?= $branding_image ?>" alt="<?= get_bloginfo('name') ?>"> 

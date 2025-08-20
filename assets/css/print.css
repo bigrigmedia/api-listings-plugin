@@ -37,6 +37,13 @@
     #header-fixed header + * {
         margin-top: 0 !important;
     }
+
+    .api-print-container {
+        width: 100%;
+        padding-left: 15px;
+        padding-right: 15px;
+        max-width: 1440px;
+    }
     
     .property-api-inner {
         width: 100% !important;
