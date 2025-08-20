@@ -1,5 +1,6 @@
 .api-plugin-single-listing {
     padding: 30px 0;
+    text-align: left;
 
     .single-listing-container {
         width: 100%;
@@ -142,8 +143,8 @@
         }
 
         input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
+            width: 16px !important;
+            height: 16px !important;
         }
     
         label {
@@ -186,6 +187,12 @@
         text-transform: uppercase;
         margin-top: 15px;
         line-height: 1;
+        text-decoration: none;
+    }
+
+    .api-print-button {
+        width: 100%;
+        margin-top: 15px;
     }
 
     .api-property-description {

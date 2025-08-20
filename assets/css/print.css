@@ -11,6 +11,9 @@
     footer.footer,
     header,
     footer,
+    .header-component-a,
+    .header-component-b,
+    .header-component-c,
     .contact-c,
     .contact-a,
     .section--social,
@@ -35,7 +38,7 @@
         margin-top: 0 !important;
     }
     
-    .property {
+    .property-api-inner {
         width: 100% !important;
         padding-top: 0 !important;
     }
@@ -47,14 +50,18 @@
     }
 
     .section--split,
-    .section__content {
+    .section--split .column,
+    .section__content,
+    .section-col-spawn {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
     }
 
     @media (max-width: 1023px) {
         .section--split,
-        .section__content {
+        .section--split .column,
+        .section__content,
+        .section-col-spawn {
             padding-top: 0 !important;
             padding-bottom: 0 !important;
         }
@@ -87,7 +94,7 @@
 
     .print-logo {
         width: auto;
-        height: 100px;
+        height: 80px;
     }
 
     .print-website-url {
@@ -157,11 +164,14 @@
 
     .print-contact-info * {
         color: #fff !important;
-        font-size: 16px !important;
+        font-size: 14px !important;
+        font-family: 'Arial', sans-serif;
     }
 
-    .print-contact-info__email {
+    .print-contact-info__email,
+    .print-contact-info__phone {
         font-size: 14px !important;
+        font-family: 'Arial', sans-serif;
     }
     
     .print-title {

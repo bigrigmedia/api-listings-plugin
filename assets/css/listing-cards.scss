@@ -39,6 +39,7 @@
         text-transform: uppercase;
         margin-top: 15px;
         line-height: 1;
+        text-decoration: none;
     }
 }
 
@@ -53,6 +54,16 @@
 
     @media (min-width: 1024px) {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .no-listings-found {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+        color: #252525;
+        font-family: 'Arial', sans-serif;
+        padding: 15px;
+        grid-column: span 3
     }
 
     .unit-listing {

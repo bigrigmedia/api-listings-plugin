@@ -63,7 +63,7 @@ function fetchListings() {
             allListings = JSON.parse(ourRequest.responseText); // Store all fetched posts
 
             if (allListings.length === 0 && !isSiteHome) {
-                apiListingsContainer.innerHTML = "<p>No listings found.</p>";
+                apiListingsContainer.innerHTML = "<div class='no-listings-found'><p>No listings found.</p></div>";
                 if (loadListingsBtn) {
                     loadListingsBtn.style.display = "none"; // Hide pagination buttons
                 }

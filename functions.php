@@ -3,7 +3,7 @@
  * Plugin Name: Home listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds a block for displaying home listings from an API and a page template for displaying listing details.
- * Version: 0.9
+ * Version: 1.0
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '0.9');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.0');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);

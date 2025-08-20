@@ -109,6 +109,7 @@ $section_id = 'single-api-listings-' . uniqid();
 
         $details = [
             'Lot Number' => $property_n,
+            'Status'   => $purchase,
             'Listing Number'    => $property_n . '/' . $listdate,
             'Address'   => $address . ', ' . $city_name . ', ' . $state_name . ' ' . $zipcode,
             'Price'     => '$' . $price,
@@ -118,7 +119,6 @@ $section_id = 'single-api-listings-' . uniqid();
             'Bathrooms' => $bathrooms,
             'Listing Type' => $sos,
             'Community'   => $community,
-            'Purchase Type'   => $purchase,
             'Square Feet'   => $square_feet,
             'Width'   => $width,
             'Length'   => $length,
@@ -160,7 +160,7 @@ $section_id = 'single-api-listings-' . uniqid();
         $contact_white = get_option('api_listings_contact_form_text_white', false) ? 'white-contact-form' : '';
         ?>
 
-        <div class="property">
+        <div class="property-api-inner">
             <h1 class="api-property-title"><?= $title ?></h1>
             <?php if($property_n): ?>
             <p class="api-property-listing-number">Listing #: <?= $property_n ?>/<?= $listdate ?></p>
@@ -259,7 +259,7 @@ $section_id = 'single-api-listings-' . uniqid();
 
                                 <p><?= $content ?></p>
                             <?php endif; ?>
-                            <button class="button-api-listing" onclick="window.print()">Price Sheet</button>
+                            <button class="button-api-listing api-print-button" onclick="window.print()">Price Sheet</button>
 
                             <?php if ($video_tour): ?>
                             <hr class=" mt-0 mb-15">
