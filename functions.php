@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Home listings API
+ * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
- * Description: Adds a block for displaying home listings from an API and a page template for displaying listing details.
+ * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
  * Version: 1.0
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
