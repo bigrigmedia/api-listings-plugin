@@ -27,3 +27,7 @@ if (jQuery('.js-carousel-nav').length) {
         slidesToScroll: 3,
     });
 }
+
+Fancybox.bind("[data-fancybox]", {
+    // Your custom options
+  });

@@ -185,14 +185,14 @@ $section_id = 'single-api-listings-' . uniqid();
                     <div class="api-property-gallery__large js-carousel-gallery">
                         <?php foreach ($gallery as $gallery_item): ?>
                         <div class="api-property-gallery__item px-2">
-                            <div class="gallery-bg-img" style="background-image: url(<?= $gallery_item['url'] ?>);"></div>
+                            <a class="gallery-bg-img" style="background-image: url(<?= $gallery_item['url'] ?>);" data-fancybox="property-gallery" data-src="<?= $gallery_item['url'] ?>"></a>
                         </div>
                         <?php endforeach; ?>
                     </div>
                     <div class="api-property-gallery__nav js-carousel-nav">
                         <?php foreach ($gallery as $gallery_item): ?>
                         <div class="api-property-gallery__item px-2">
-                            <div class="gallery-bg-img" style="background-image: url(<?= $gallery_item['url'] ?>);"></div>
+                            <a class="gallery-bg-img" style="background-image: url(<?= $gallery_item['url'] ?>);" data-fancybox="property-gallery-nav" data-src="<?= $gallery_item['url'] ?>"></a>
                         </div>
                         <?php endforeach; ?>
                     </div>

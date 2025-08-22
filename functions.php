@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 1.1
+ * Version: 1.2
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.1');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.2');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -618,6 +618,22 @@ class BrmApiListingsPlugin {
             'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js',
             array('jquery'),
             '1.8.1',
+            true
+        );
+
+        //Enqueue fancybox from CDN
+        wp_enqueue_style(
+            'fancybox',
+            'https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.css',
+            array(),
+            '6.0'
+        );
+
+        wp_enqueue_script(
+            'fancybox',
+            'https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.umd.js',
+            array('jquery'),
+            '6.0',
             true
         );
         
