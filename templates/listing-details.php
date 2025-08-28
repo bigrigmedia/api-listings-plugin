@@ -3,9 +3,23 @@
  * Template for displaying listing details
  */
 
-$section_id = 'single-api-listings-' . uniqid();
-?>
 
+$section_id = 'single-api-listings-' . uniqid();
+
+if (!isset($_GET['id'])): 
+    ?>
+    <section id="<?php echo esc_attr($section_id); ?>" class="api-plugin-single-listing">
+        <div class="single-listing-container">
+            <div class="no-property-selected">
+                <h3>No Property ID Provided</h3>
+                <p>Please provide a property ID in the URL to view the property details.</p>
+            </div>
+        </div>
+    </section>
+    <?php
+    return;
+endif;
+?>
 
 <section id="<?php echo esc_attr($section_id); ?>" class="api-plugin-single-listing">
     <div class="single-listing-container">
@@ -17,14 +31,6 @@ $section_id = 'single-api-listings-' . uniqid();
             $id = $_GET['id'];
         }
         ?>
-
-        <?php if ($id == 0) { ?>
-
-            <div>
-            <h1 class="text-center">No Property Selected</h1>
-            </div>
-
-        <?php } ?>
 
         <?php
 
@@ -78,7 +84,7 @@ $section_id = 'single-api-listings-' . uniqid();
         $phone_property = $acf_fields['property_phone'] ?? '';
         $bedrooms = $acf_fields['bedrooms_home'] ?? '';
         $bathrooms = $acf_fields['bathrooms_home'] ?? '';
-        $gallery = $acf_fields['gallery_homes'] ?? '';
+        $gallery = $acf_fields['gallery_homes'] ?: array();
         $video_tour = $acf_fields['video_tour'] ?? '';
         $property_n = $acf_fields['lot_number'];
         $listdate = $acf_fields['listdate'] ?? '';
@@ -138,6 +144,11 @@ $section_id = 'single-api-listings-' . uniqid();
             'Listing Type' => $sos
         ];
 
+        $featured_image = '';
+        if (isset($homedata['_embedded']['wp:featuredmedia'][0]['source_url'])) {
+            $featured_image = $homedata['_embedded']['wp:featuredmedia'][0]['source_url'];
+        }
+
         $form_settings = [
             'form_action' => get_option('api_listings_contact_form_action', ''),
             'contact_method_field_id' => get_option('api_listings_contact_method_field_id', ''),
@@ -181,8 +192,14 @@ $section_id = 'single-api-listings-' . uniqid();
             </div>
             <div class="api-property-content">
                 <div class="api-property-gallery">
-                    <?php if ($gallery): ?>
+                    <?php if ($gallery || $featured_image): ?>
                     <div class="api-property-gallery__large js-carousel-gallery">
+                        <?php if ($featured_image): ?>
+                        <div class="api-property-gallery__item px-2">
+                            <a class="gallery-bg-img" style="background-image: url('<?= $featured_image ?>');" data-fancybox="property-gallery" data-src="<?= $featured_image ?>"></a>
+                        </div>
+                        <?php endif; ?>
+
                         <?php foreach ($gallery as $gallery_item): ?>
                         <div class="api-property-gallery__item px-2">
                             <a class="gallery-bg-img" style="background-image: url(<?= $gallery_item['url'] ?>);" data-fancybox="property-gallery" data-src="<?= $gallery_item['url'] ?>"></a>
@@ -190,6 +207,13 @@ $section_id = 'single-api-listings-' . uniqid();
                         <?php endforeach; ?>
                     </div>
                     <div class="api-property-gallery__nav js-carousel-nav">
+
+                        <?php if ($featured_image): ?>
+                        <div class="api-property-gallery__item px-2">
+                            <a class="gallery-bg-img" style="background-image: url('<?= $featured_image ?>');" data-fancybox="property-gallery-nav" data-src="<?= $featured_image ?>"></a>
+                        </div>
+                        <?php endif; ?>
+
                         <?php foreach ($gallery as $gallery_item): ?>
                         <div class="api-property-gallery__item px-2">
                             <a class="gallery-bg-img" style="background-image: url(<?= $gallery_item['url'] ?>);" data-fancybox="property-gallery-nav" data-src="<?= $gallery_item['url'] ?>"></a>
@@ -257,7 +281,7 @@ $section_id = 'single-api-listings-' . uniqid();
                                     $content = strip_tags($content);
                                 ?>
 
-                                <p><?= $content ?></p>
+                                <p class="api-property-the-content"><?= $content ?></p>
                             <?php endif; ?>
                             <button class="button-api-listing api-print-button" onclick="window.print()">Price Sheet</button>
 
@@ -452,9 +476,13 @@ $section_id = 'single-api-listings-' . uniqid();
     $website_url = str_replace('https://', '', $website_url);
     $website_url = str_replace('www.', '', $website_url);
 
-    $featured_image = '';
-    if (isset($homedata['_embedded']['wp:featuredmedia'][0]['source_url'])) {
-        $featured_image = $homedata['_embedded']['wp:featuredmedia'][0]['source_url'];
+    $gallery_empty_class = '';
+
+    //Check if gallery is an array then check if it's empty
+    if (is_array($gallery)) {
+        if (empty($gallery)) {
+            $gallery_empty_class = 'gallery-empty';
+        }
     }
     ?>
 
@@ -467,9 +495,9 @@ $section_id = 'single-api-listings-' . uniqid();
                 <strong class="print-website-url"><?= $website_url ?></strong>
             </div>
             <div class="print-gallery">
-            <?php if($gallery): ?>
+            <?php if($gallery || $featured_image): ?>
                 <?php if ($featured_image): ?>
-                <div class="print-gallery__item">
+                <div class="print-gallery__item <?= $gallery_empty_class ?>">
                     <div class="print-gallery__item__image" style="background-image: url('<?= $featured_image ?>');"></div>
                 </div>
                 <?php endif; ?>
@@ -479,8 +507,8 @@ $section_id = 'single-api-listings-' . uniqid();
                 </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="print-gallery__item">
-                <div class="print-gallery__item__image" style="background-image: url('https://www.legacymhc.com/app/uploads/2025/01/Photo-placeholder-300x251.png');"></div>
+                <div class="print-gallery__item <?= $gallery_empty_class ?>">
+                    <div class="print-gallery__item__image" style="background-image: url('https://www.legacymhc.com/app/uploads/2025/01/Photo-placeholder-300x251.png');"></div>
                 </div>
             <?php endif; ?>
             </div>

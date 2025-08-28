@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 1.2
+ * Version: 1.3
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.2');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.3');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -257,6 +257,22 @@ class BrmApiListingsPlugin {
             )
         );
 
+
+        //Settings for card drop shadow effect
+        register_setting('api_listings_plugin_settings', 'api_listings_card_drop_shadow');
+
+        add_settings_field(
+            'api_listings_card_drop_shadow_field',
+            'Card Drop Shadow Effect',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_plugin_settings',
+            'api_listings_settings_section',
+            array(
+                'type' => 'checkbox',
+                'option_name' => 'api_listings_card_drop_shadow',
+                'default' => false
+            )
+        );
 
         //Settings for single listing page contact form background color
         register_setting('api_listings_plugin_settings', 'api_listings_contact_form_color');
@@ -701,6 +717,7 @@ class BrmApiListingsPlugin {
         $button_color = get_option('api_listings_button_color', '#287092');
         $button_text_color = get_option('api_listings_button_text_color', '#ffffff');
         $card_text_white = get_option('api_listings_card_text_white', false) ? 'white-card' : '';
+        $card_drop_shadow = get_option('api_listings_card_drop_shadow', false) ? 'card-drop-shadow' : '';
         $section_id = 'api-listings-' . uniqid();
         
         ob_start();
@@ -725,8 +742,14 @@ class BrmApiListingsPlugin {
             </form>
             <?php endif; ?>
 
-            <div id="plugin-api-listings-container" <?php if (is_front_page()) { echo 'data-home="true"'; } ?> class="<?php echo esc_attr($card_text_white); ?>">
+            <div
+            id="plugin-api-listings-container"
+            <?php if (is_front_page()) { echo 'data-home="true"'; } ?>
+            class="<?php echo esc_attr($card_text_white); ?> <?php echo esc_attr($card_drop_shadow); ?>"
+            >
             </div>
+
+            <div id="api-listings-loading-spinner" style="display: none;">Loading Home Listings...</div>
             
             <?php if (!is_front_page()) : ?>
                 <div id="listings-pagination-container">

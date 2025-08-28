@@ -21,6 +21,33 @@
             height: 45px;
             appearance: auto;
             font-size: 16px;
+            padding: 0 5px !important;
+        }
+    }
+
+     #api-listings-loading-spinner {
+        display: none;
+        /* Hidden by default */
+        position: relative;
+        margin-top: 45px;
+        z-index: 999;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 1.5em;
+        font-family: 'Arial', sans-serif;
+        animation: fadeInOut 2s infinite;
+    }
+
+    @keyframes fadeInOut {
+        0%, 100% {
+            opacity: 0.25;
+        }
+        50% {
+            opacity: 1;
         }
     }
 
@@ -70,6 +97,12 @@
         display: flex;
         flex-direction: column;
         background-color: var(--card-color);
+    }
+
+    &.card-drop-shadow {
+        .unit-listing {
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        }
     }
 
     .unit-data {
@@ -131,6 +164,7 @@
         font-weight: 600;
         color: #252525;
         font-family: 'Arial', sans-serif;
+        text-decoration: none !important;
     }
 
     &.white-card {

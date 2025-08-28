@@ -15,7 +15,7 @@ var propertyId = api_listings_plugin_settings?.property_id;
 var loadListingsBtn = document.getElementById("load-listings-btn");
 
 // Locate the loading spinner
-var loadingListingsSpinner = document.getElementById("loading-spinner");
+var loadingListingsSpinner = document.getElementById("api-listings-loading-spinner");
 
 // Add event listeners for filtering and sorting
 document.getElementById('listing-sos-number')?.addEventListener('change', function () {
@@ -62,7 +62,7 @@ function fetchListings() {
         if (ourRequest.status >= 200 && ourRequest.status < 400) {
             allListings = JSON.parse(ourRequest.responseText); // Store all fetched posts
 
-            if (allListings.length === 0 && !isSiteHome) {
+            if (allListings.length === 0) {
                 apiListingsContainer.innerHTML = "<div class='no-listings-found'><p>No listings found.</p></div>";
                 if (loadListingsBtn) {
                     loadListingsBtn.style.display = "none"; // Hide pagination buttons
