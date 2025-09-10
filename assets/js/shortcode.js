@@ -202,7 +202,7 @@ function renderHTML(postData) {
 
     if (postData._embedded["wp:featuredmedia"]) {
         ourHTMLString +=
-            "<div class=unit-image style='background-image: url(" + postData._embedded["wp:featuredmedia"][0].media_details.sizes.medium.source_url + ")'>";
+            "<div class=unit-image style='background-image: url(" + postData._embedded["wp:featuredmedia"][0].media_details.sizes.full.source_url + ")'>";
         if (price_original && price && priceDifference > 0) {
             ourHTMLString += "<div class='reduced-price'>" + "Price Cut: $" + priceDifference + "k</div>";
         }
