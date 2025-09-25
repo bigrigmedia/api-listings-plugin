@@ -98,13 +98,26 @@ endif;
         $length = $acf_fields['property_length'] ?? '';
         $vin = $acf_fields['vin_number'] ?? '';
 
-        if ($square_feet) {
-            $width = $square_feet / 2;
-            $length = $square_feet / 2;
-        } else {
+        //If square feet is not set, but width and length are set, then calculate square feet
+        if (!$square_feet && $width && $length) {
             $square_feet = $width * $length;
         }
 
+        //If width is not set, but square feet and length are set, then calculate width
+        if (!$width && $square_feet && $length) {
+            $width = $square_feet / $length;
+        }
+
+        //If length is not set, but square feet and width are set, then calculate length
+        if (!$length && $square_feet && $width) {
+            $length = $square_feet / $width;
+        }
+
+        //If width and length are not set, but square feet is set, then calculate width and length
+        if (!$width && !$length && $square_feet) {
+            $width = sqrt($square_feet);
+            $length = sqrt($square_feet);
+        }
 
         $sos = $acf_fields['sos_number'] ?? '';
         if ($sos === 'Community Owned - New') {
