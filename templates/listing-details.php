@@ -101,6 +101,8 @@ endif;
         if ($square_feet) {
             $width = $square_feet / 2;
             $length = $square_feet / 2;
+        } else {
+            $square_feet = $width * $length;
         }
 
 
@@ -163,7 +165,6 @@ endif;
         $tagline = $acf_fields['property_tagline'] ?? '';
         $community = $acf_fields['property_community_type'] ?? '';
         $purchase = $acf_fields['property_purchase_type'] ?? '';
-        $square_feet = $acf_fields['property_square_feet'] ?? '';
         $property_brochure = $acf_fields['brochure_field'] ?? '';
 
         $property_plan = $acf_fields['floor_plan'] ?? '';
