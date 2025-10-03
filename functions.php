@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 1.5
+ * Version: 1.6
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.5');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.6');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -711,6 +711,8 @@ class BrmApiListingsPlugin {
      */
     public function api_listings_cards_callback($atts, $content = '') {
         $atts = shortcode_atts(array(
+            'new-only' => 'false',
+            'white-notice-text' => 'false'
         ), $atts, 'api_listings_cards');
 
         $card_color = get_option('api_listings_card_color', '#26bbe0');
@@ -745,6 +747,8 @@ class BrmApiListingsPlugin {
             <div
             id="plugin-api-listings-container"
             <?php if (is_front_page()) { echo 'data-home="true"'; } ?>
+            <?php if ($atts['new-only'] === 'true') { echo 'data-new-only="true"'; } ?>
+            <?php if ($atts['white-notice-text'] === 'true') { echo 'data-white-notice-text="true"'; } ?>
             class="<?php echo esc_attr($card_text_white); ?> <?php echo esc_attr($card_drop_shadow); ?>"
             >
             </div>

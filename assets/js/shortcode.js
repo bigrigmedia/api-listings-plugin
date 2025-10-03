@@ -1,6 +1,8 @@
 var apiListingsContainer = document.getElementById("plugin-api-listings-container");
 var isSiteHome = apiListingsContainer.getAttribute('data-home') === 'true';
 var queryVideoListings = apiListingsContainer.getAttribute('data-query-video') === 'true';
+var newOnly = apiListingsContainer.getAttribute('data-new-only') === 'true';
+var whiteNoticeText = apiListingsContainer.getAttribute('data-white-notice-text') === 'true';
 var listingSosNumber = ''; // Initialize listingSosNumber as empty
 var listingSortOrder = 'newest'; // Default sort order is newest to oldest
 var allListings = []; // Store all fetched posts
@@ -16,6 +18,10 @@ var loadListingsBtn = document.getElementById("load-listings-btn");
 
 // Locate the loading spinner
 var loadingListingsSpinner = document.getElementById("api-listings-loading-spinner");
+
+if (newOnly) {
+    listingSosNumber = 'Community Owned - New';
+}
 
 // Add event listeners for filtering and sorting
 document.getElementById('listing-sos-number')?.addEventListener('change', function () {
@@ -63,7 +69,7 @@ function fetchListings() {
             allListings = JSON.parse(ourRequest.responseText); // Store all fetched posts
 
             if (allListings.length === 0) {
-                apiListingsContainer.innerHTML = "<div class='no-listings-found'><p>No listings found.</p></div>";
+                apiListingsContainer.innerHTML = "<div class='no-listings-found' style='color: " + (whiteNoticeText ? "white" : "") + ";'><p>No listings found.</p></div>";
                 if (loadListingsBtn) {
                     loadListingsBtn.style.display = "none"; // Hide pagination buttons
                 }
