@@ -8,7 +8,7 @@ var listingSortOrder = 'newest'; // Default sort order is newest to oldest
 var allListings = []; // Store all fetched posts
 var currentListingCount = 0; // Track the number of posts currently displayed
 var listingsPerBatch = 6; // How many posts to show per batch
-var listingCount = isSiteHome ? 3 : 32; // Set listing amount based on isSiteHome value
+var listingCount = isSiteHome ? 3 : 72; // Set listing amount based on isSiteHome value
 listingsPerBatch = isSiteHome ? 3 : 6; // Set items per batch based on isSiteHome value
 
 var propertyId = api_listings_plugin_settings?.property_id;
@@ -208,7 +208,7 @@ function renderHTML(postData) {
 
     if (postData._embedded["wp:featuredmedia"]) {
         ourHTMLString +=
-            "<div class=unit-image style='background-image: url(" + postData._embedded["wp:featuredmedia"][0].media_details.sizes.full.source_url + ")'>";
+            "<div class=unit-image style='background-image: url(" + postData._embedded["wp:featuredmedia"][0].source_url + ")'>";
         if (price_original && price && priceDifference > 0) {
             ourHTMLString += "<div class='reduced-price'>" + "Price Cut: $" + priceDifference + "k</div>";
         }

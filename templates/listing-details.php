@@ -322,47 +322,103 @@ endif;
                         let form_settings = <?= json_encode($form_settings) ?>;
                         
                         function checkForm(form) {
-                            if (form.first.value == '') {
-                                alert('Please complete required fields');
+                            // Check First Name
+                            if (!form.first || form.first.value.trim() == '') {
+                                alert('Please enter your first name');
+                                if (form.first) form.first.focus();
                                 return false;
                             }
-                            if (form.last.value == '') {
-                                alert('Please complete required fields');
+                            
+                            // Check Last Name
+                            if (!form.last || form.last.value.trim() == '') {
+                                alert('Please enter your last name');
+                                if (form.last) form.last.focus();
                                 return false;
                             }
-                            if (form.phone.value == '') {
-                                alert('Please complete required fields');
+                            
+                            // Check Phone
+                            if (!form.phone || form.phone.value.trim() == '') {
+                                alert('Please enter your phone number');
+                                if (form.phone) form.phone.focus();
                                 return false;
                             }
+                            
+                            // Check Email (required)
+                            if (!form.email || form.email.value.trim() == '') {
+                                alert('Please enter your email address');
+                                if (form.email) form.email.focus();
+                                return false;
+                            }
+                            
+                            // Validate Email Format
                             var emailRegex = /^.+@.+\..{2,6}$/;
-                            if (form.email) {
-                                if (form.email.value && !emailRegex.test(form.email.value)) {
-                                    alert('Please enter a valid email address');
-                                    form.email.focus();
+                            if (form.email.value && !emailRegex.test(form.email.value)) {
+                                alert('Please enter a valid email address');
+                                if (form.email) form.email.focus();
+                                return false;
+                            }
+                            
+                            // Check Preferred Contact Method (checkboxes)
+                            var contactMethodFieldName = form_settings['contact_method_field_id'] + '[]';
+                            var contactMethodCheckboxes = form.querySelectorAll('input[name="' + contactMethodFieldName + '"]');
+                            var contactMethodChecked = false;
+                            
+                            if (contactMethodCheckboxes && contactMethodCheckboxes.length > 0) {
+                                // Check if any checkbox is checked
+                                for (var i = 0; i < contactMethodCheckboxes.length; i++) {
+                                    if (contactMethodCheckboxes[i].checked) {
+                                        contactMethodChecked = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if (!contactMethodChecked) {
+                                alert('Please select at least one preferred contact method');
+                                return false;
+                            }
+                            
+                            // Check "How soon are you looking to move?" dropdown
+                            var moveInField = form[form_settings['move_in_date_field_id']];
+                            if (!moveInField || !moveInField.value || moveInField.value.trim() == '') {
+                                alert('Please select how soon you are looking to move');
+                                if (moveInField) moveInField.focus();
+                                return false;
+                            }
+                            
+                            // Check "How did you hear about us?" dropdown
+                            var referralField = form[form_settings['referral_source_field_id']];
+                            if (!referralField || !referralField.value || referralField.value.trim() == '') {
+                                alert('Please select how you heard about us');
+                                if (referralField) referralField.focus();
+                                return false;
+                            }
+                            
+                            // Check reCAPTCHA (if present)
+                            if (typeof grecaptcha !== 'undefined') {
+                                try {
+                                    var recaptchaResponse = grecaptcha.getResponse();
+                                    if (!recaptchaResponse || recaptchaResponse.length == 0) {
+                                        alert('Please complete the reCAPTCHA verification');
+                                        return false;
+                                    }
+                                } catch(e) {
+                                    // reCAPTCHA might not be ready, but we should still check
+                                    alert('Please complete the reCAPTCHA verification');
                                     return false;
                                 }
                             }
-                            if (form.email.value == '') {
-                                alert('Please complete required fields');
-                                return false;
-                            }
-                            if (form[form_settings['contact_method_field_id']].value == '') {
-                                alert('Please complete required fields');
-                                return false;
-                            }
-                            if (form[form_settings['move_in_date_field_id']].value == '') {
-                                alert('Please complete required fields');
-                                return false;
-                            }
-                            if (form[form_settings['referral_source_field_id']].value == '') {
-                                alert('Please complete required fields');
-                                return false;
-                            }
-                    
+                            
+                            // Push form submission event to dataLayer
+                            window.dataLayer = window.dataLayer || [];
+                            window.dataLayer.push({
+                                'event': 'formSubmission_success'
+                            });
+                            
                             return true;
                         }
                     </script>
-                    <form name="openleads" method="post" action="<?= $form_settings['form_action'] ?>" onsubmit="return checkForm(this);">
+                    <form name="openleads" method="post" action="<?= $form_settings['form_action'] ?>" onsubmit="return checkForm(this);" novalidate>
                         <div class="api-property-form-field">
                             <label for="first">First Name *</label>
                             <input type="text" size="40" maxlength="200" id="first" name="first" value="" required="">
