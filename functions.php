@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 1.7
+ * Version: 1.75
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,14 +16,15 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.7');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.75');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
 
 
 // Include the updater class
-require_once BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR . 'includes/updater.php';
+// Temporarily disabled due to issues with site performance
+//require_once BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR . 'includes/updater.php';
 
 // Include the logger class
 require_once BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR . 'includes/logger.php';
@@ -791,7 +792,7 @@ class BrmApiListingsPlugin {
 BrmApiListingsPlugin::get_instance();
 
 // Initialize the updater
-Updater::get_instance();
+//Updater::get_instance();
 
 /**
  * Helper function to get plugin instance
