@@ -735,6 +735,28 @@ class BrmApiListingsPlugin {
                         <option value="used">Previously Owned</option>
                     </select>
                 </div>
+                <div>
+                    <select id="listing-bedrooms" name="bedrooms">
+                        <option value="">Filter by Bedrooms</option>
+                        <option value="1">1 Bedroom</option>
+                        <option value="2">2 Bedrooms</option>
+                        <option value="3">3 Bedrooms</option>
+                        <option value="4">4 Bedrooms</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="listing-bathrooms" name="bathrooms">
+                        <option value="">Filter by Bathrooms</option>
+                        <option value="1">1 Bathroom</option>
+                        <option value="2">2 Bathrooms</option>
+                        <option value="3">3 Bathrooms</option>
+                        <option value="4">4 Bathrooms</option>
+                    </select>
+                </div>
+                <div>
+                    <input type="number" id="listing-min-price" name="min_price" placeholder="Min Price">
+                    <input type="number" id="listing-max-price" name="max_price" placeholder="Max Price">
+                </div>
                 <div style="display: none;">
                     <label for="listing-sort-order">Sort by Date:</label>
                     <select id="listing-sort-order" name="sortOrder" style="padding: 0;">

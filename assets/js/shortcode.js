@@ -3,8 +3,14 @@ var isSiteHome = apiListingsContainer.getAttribute('data-home') === 'true';
 var queryVideoListings = apiListingsContainer.getAttribute('data-query-video') === 'true';
 var newOnly = apiListingsContainer.getAttribute('data-new-only') === 'true';
 var whiteNoticeText = apiListingsContainer.getAttribute('data-white-notice-text') === 'true';
+
 var listingSosNumber = ''; // Initialize listingSosNumber as empty
+var listingsBedrooms = ''; // Initialize listingsBedrooms as empty
+var listingsBathrooms = ''; // Initialize listingsBathrooms as empty
+var listingsMinPrice = ''; // Initialize listingsMinPrice as empty
+var listingsMaxPrice = ''; // Initialize listingsMaxPrice as empty
 var listingSortOrder = 'newest'; // Default sort order is newest to oldest
+
 var allListings = []; // Store all fetched posts
 var currentListingCount = 0; // Track the number of posts currently displayed
 var listingsPerBatch = 6; // How many posts to show per batch
@@ -27,6 +33,41 @@ if (newOnly) {
 document.getElementById('listing-sos-number')?.addEventListener('change', function () {
     listingSosNumber = this.value; // Update listingSosNumber with the selected value 
     fetchListings(); // Fetch the posts with the new filter
+});
+
+document.getElementById('listing-bedrooms')?.addEventListener('change', function () {
+    listingsBedrooms = this.value; // Update listingsBedrooms with the selected value
+    fetchListings(); // Fetch the posts with the new filter
+});
+
+document.getElementById('listing-bathrooms')?.addEventListener('change', function () {
+    listingsBathrooms = this.value; // Update listingsBathrooms with the selected value
+    fetchListings(); // Fetch the posts with the new filter
+});
+
+// Price filter event listeners - trigger on blur (unfocus) and Enter key
+document.getElementById('listing-min-price')?.addEventListener('blur', function () {
+    listingsMinPrice = this.value; // Update listingsMinPrice with the selected value
+    fetchListings(); // Fetch the posts with the new filter
+});
+
+document.getElementById('listing-min-price')?.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        listingsMinPrice = this.value; // Update listingsMinPrice with the selected value
+        fetchListings(); // Fetch the posts with the new filter
+    }
+});
+
+document.getElementById('listing-max-price')?.addEventListener('blur', function () {
+    listingsMaxPrice = this.value; // Update listingsMaxPrice with the selected value
+    fetchListings(); // Fetch the posts with the new filter
+});
+
+document.getElementById('listing-max-price')?.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        listingsMaxPrice = this.value; // Update listingsMaxPrice with the selected value
+        fetchListings(); // Fetch the posts with the new filter
+    }
 });
 
 document.getElementById('listing-sort-order')?.addEventListener('change', function () {
@@ -59,8 +100,14 @@ function fetchListings() {
     var videoQuery = queryVideoListings ? "&video_tour" : "";
 
     var apiRequest =
-        "https://www.legacymhc.com/wp-json/wp/v2/properties?per_page=" + listingCount + "&parent=" + propertyId + "&_embed&sos_number=" + encodeURIComponent(listingSosNumber) +
-        "&listdate=" + encodeURIComponent(listingSortOrder) + videoQuery;
+        "https://www.legacymhc.com/wp-json/wp/v2/properties?per_page=" + listingCount + "&parent=" + propertyId + "&_embed"
+        + "&sos_number=" + encodeURIComponent(listingSosNumber)
+        + "&listdate=" + encodeURIComponent(listingSortOrder) 
+        + "&bedrooms=" + encodeURIComponent(listingsBedrooms)
+        + "&bathrooms=" + encodeURIComponent(listingsBathrooms)
+        + "&min_price=" + encodeURIComponent(listingsMinPrice)
+        + "&max_price=" + encodeURIComponent(listingsMaxPrice)
+        + videoQuery;
 
     var ourRequest = new XMLHttpRequest();
     ourRequest.open("GET", apiRequest);
@@ -288,4 +335,5 @@ function renderHTML(postData) {
 
     apiListingsContainer.innerHTML += ourHTMLString; // Append the new post to the container
 }
+
 
