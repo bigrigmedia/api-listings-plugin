@@ -200,7 +200,7 @@ function renderHTML(postData) {
 
     var removeDecimal = formatprice.slice(0, -3);
 
-    var ourHTMLString = "<div id='" + postData.acf.property_purchase_type + "' class=unit-listing >";
+    var ourHTMLString = "<div class='listing-purchase-type-" + postData.acf.property_purchase_type + " unit-listing' >";
 
     var priceDifference = price_original - price;
     priceDifference = priceDifference / 1000;
@@ -209,15 +209,25 @@ function renderHTML(postData) {
     if (postData._embedded["wp:featuredmedia"]) {
         ourHTMLString +=
             "<div class=unit-image style='background-image: url(" + postData._embedded["wp:featuredmedia"][0].source_url + ")'>";
-        if (price_original && price && priceDifference > 0) {
+        if (price_original && price && priceDifference > 0 && 0) {
             ourHTMLString += "<div class='reduced-price'>" + "Price Cut: $" + priceDifference + "k</div>";
         }
+
+        if (postData.acf.property_purchase_type === "500") {
+            ourHTMLString += "<div class='listing-banner'>" + "SOLD" + "</div>";
+        }
+
         ourHTMLString += "</div>";
     } else {
         ourHTMLString += "<div class=unit-image style='background-image: url(https://www.legacymhc.com/app/uploads/2023/12/placeholder.png)'>";
-        if (price_original && price && priceDifference > 0) {
+        if (price_original && price && priceDifference > 0 && 0) {
             ourHTMLString += "<div class='reduced-price'>" + "Price Cut: $" + priceDifference + "k</div>";
         }
+
+        if (postData.acf.property_purchase_type === "500") {
+            ourHTMLString += "<div class='listing-banner'>" + "SOLD" + "</div>";
+        }
+
         ourHTMLString += "</div>";
     }
 
