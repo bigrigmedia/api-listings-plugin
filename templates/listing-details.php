@@ -237,7 +237,7 @@ endif;
                     <?php else: ?>
                     <div class="api-property-gallery__large js-carousel-gallery">
                         <div class="api-property-gallery__item px-2">
-                            <div class="gallery-bg-img" style="background-image: url('https://www.legacymhc.com/app/uploads/2023/12/placeholder.png');">
+                            <div class="gallery-bg-img" style="background-image: url('https://www.legacymhc.com/app/themes/sage/assets/images/2026-coming-soon.png');">
                             </div>
                         </div>
                     </div>
@@ -578,7 +578,7 @@ endif;
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="print-gallery__item <?= $gallery_empty_class ?>">
-                    <div class="print-gallery__item__image" style="background-image: url('https://www.legacymhc.com/app/uploads/2025/01/Photo-placeholder-300x251.png');"></div>
+                    <div class="print-gallery__item__image" style="background-image: url('https://www.legacymhc.com/app/themes/sage/assets/images/2026-coming-soon.png');"></div>
                 </div>
             <?php endif; ?>
             </div>

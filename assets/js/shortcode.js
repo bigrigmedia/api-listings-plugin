@@ -217,15 +217,23 @@ function renderHTML(postData) {
             ourHTMLString += "<div class='listing-banner'>" + "SOLD" + "</div>";
         }
 
+        if (postData.acf.property_purchase_type === "240") {
+            ourHTMLString += "<div class='listing-banner'>" + "PENDING" + "</div>";
+        }
+
         ourHTMLString += "</div>";
     } else {
-        ourHTMLString += "<div class=unit-image style='background-image: url(https://www.legacymhc.com/app/uploads/2023/12/placeholder.png)'>";
+        ourHTMLString += "<div class=unit-image style='background-image: url(https://www.legacymhc.com/app/themes/sage/assets/images/2026-coming-soon.png)'>";
         if (price_original && price && priceDifference > 0 && 0) {
             ourHTMLString += "<div class='reduced-price'>" + "Price Cut: $" + priceDifference + "k</div>";
         }
 
         if (postData.acf.property_purchase_type === "500") {
             ourHTMLString += "<div class='listing-banner'>" + "SOLD" + "</div>";
+        }
+
+        if (postData.acf.property_purchase_type === "240") {
+            ourHTMLString += "<div class='listing-banner'>" + "PENDING" + "</div>";
         }
 
         ourHTMLString += "</div>";
@@ -280,7 +288,7 @@ function renderHTML(postData) {
         ourHTMLString += "<div class='listing-number'>Listing # " + postData.acf.lot_number + "/" + postData.acf.listdate + "</div>";
     }
 
-    if (postData.acf.listdate) {
+    if (postData.acf.listdate && 0) {
         ourHTMLString += "<div class='list-date'>" + "Listed: " + formattedDate + "</div>";
     }
 
