@@ -25,6 +25,22 @@
         }
     }
 
+    .listing-filter-pills {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 1rem;
+        margin-bottom: 15px;
+    }
+
+    .listing-filter-pill {
+        background-color: #1b5774;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 30px;
+    }
+
      #api-listings-loading-spinner {
         display: none;
         /* Hidden by default */

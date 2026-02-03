@@ -37,35 +37,47 @@ document.getElementById('listing-sos-number')?.addEventListener('change', functi
 
 document.getElementById('listing-bedrooms')?.addEventListener('change', function () {
     listingsBedrooms = this.value; // Update listingsBedrooms with the selected value
+    jQuery('.listing-filter-pill.bedrooms').text('Bed: ' + this.value);
+    jQuery('.listing-filter-pill.bedrooms').css('display', 'block');
     fetchListings(); // Fetch the posts with the new filter
 });
 
 document.getElementById('listing-bathrooms')?.addEventListener('change', function () {
     listingsBathrooms = this.value; // Update listingsBathrooms with the selected value
+    jQuery('.listing-filter-pill.bathrooms').text('Bath: ' + this.value);
+    jQuery('.listing-filter-pill.bathrooms').css('display', 'block');
     fetchListings(); // Fetch the posts with the new filter
 });
 
 // Price filter event listeners - trigger on blur (unfocus) and Enter key
 document.getElementById('listing-min-price')?.addEventListener('blur', function () {
     listingsMinPrice = this.value; // Update listingsMinPrice with the selected value
+    jQuery('.listing-filter-pill.min-price').text('Min: ' + this.value);
+    jQuery('.listing-filter-pill.min-price').css('display', 'block');
     fetchListings(); // Fetch the posts with the new filter
 });
 
 document.getElementById('listing-min-price')?.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         listingsMinPrice = this.value; // Update listingsMinPrice with the selected value
+        jQuery('.listing-filter-pill.min-price').text('Min: ' + this.value);
+        jQuery('.listing-filter-pill.min-price').css('display', 'block');
         fetchListings(); // Fetch the posts with the new filter
     }
 });
 
 document.getElementById('listing-max-price')?.addEventListener('blur', function () {
     listingsMaxPrice = this.value; // Update listingsMaxPrice with the selected value
+    jQuery('.listing-filter-pill.max-price').text('Max: ' + this.value);
+    jQuery('.listing-filter-pill.max-price').css('display', 'block');
     fetchListings(); // Fetch the posts with the new filter
 });
 
 document.getElementById('listing-max-price')?.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         listingsMaxPrice = this.value; // Update listingsMaxPrice with the selected value
+        jQuery('.listing-filter-pill.max-price').text('Max: ' + this.value);
+        jQuery('.listing-filter-pill.max-price').css('display', 'block');
         fetchListings(); // Fetch the posts with the new filter
     }
 });
@@ -73,6 +85,55 @@ document.getElementById('listing-max-price')?.addEventListener('keydown', functi
 document.getElementById('listing-sort-order')?.addEventListener('change', function () {
     listingSortOrder = this.value; // Update listingSortOrder with the selected value (newest or oldest)
     fetchListings(); // Fetch the posts with the new sort order
+});
+
+//Pill filter event listeners - clear filter and remove pill
+document.querySelector('.listing-filter-pill.bedrooms')?.addEventListener('click', function () {
+    listingsBedrooms = '';
+    jQuery('.listing-filter-pill.bedrooms').text('');
+    jQuery('.listing-filter-pill.bedrooms').css('display', 'none');
+    // Reset the bedrooms dropdown
+    var bedroomsDropdown = document.getElementById('listing-bedrooms');
+    if (bedroomsDropdown) {
+        bedroomsDropdown.value = '';
+    }
+    fetchListings(); // Fetch the posts with the new filter
+});
+
+document.querySelector('.listing-filter-pill.bathrooms')?.addEventListener('click', function () {
+    listingsBathrooms = '';
+    jQuery('.listing-filter-pill.bathrooms').text('');
+    jQuery('.listing-filter-pill.bathrooms').css('display', 'none');
+    // Reset the bathrooms dropdown
+    var bathroomsDropdown = document.getElementById('listing-bathrooms');
+    if (bathroomsDropdown) {
+        bathroomsDropdown.value = '';
+    }
+    fetchListings(); // Fetch the posts with the new filter
+});
+
+document.querySelector('.listing-filter-pill.min-price')?.addEventListener('click', function () {
+    listingsMinPrice = '';
+    jQuery('.listing-filter-pill.min-price').text('');
+    jQuery('.listing-filter-pill.min-price').css('display', 'none');
+    // Reset the min price input
+    var minPriceInput = document.getElementById('listing-min-price');
+    if (minPriceInput) {
+        minPriceInput.value = '';
+    }
+    fetchListings(); // Fetch the posts with the new filter
+});
+
+document.querySelector('.listing-filter-pill.max-price')?.addEventListener('click', function () {
+    listingsMaxPrice = '';
+    jQuery('.listing-filter-pill.max-price').text('');
+    jQuery('.listing-filter-pill.max-price').css('display', 'none');
+    // Reset the max price input
+    var maxPriceInput = document.getElementById('listing-max-price');
+    if (maxPriceInput) {
+        maxPriceInput.value = '';
+    }
+    fetchListings(); // Fetch the posts with the new filter
 });
 
 // Function to show/hide the loading spinner

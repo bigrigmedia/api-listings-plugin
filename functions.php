@@ -765,6 +765,21 @@ class BrmApiListingsPlugin {
                     </select>
                 </div>
             </form>
+
+            <div class="listing-filter-pills">
+                <div class="listing-filter-pill bedrooms" style="display: none;">
+                    <span></span> Bed
+                </div>
+                <div class="listing-filter-pill bathrooms" style="display: none;">
+                    <span></span> Bath
+                </div>
+                <div class="listing-filter-pill min-price" style="display: none;">
+                    <span></span> Min
+                </div>
+                <div class="listing-filter-pill max-price" style="display: none;">
+                    <span></span> Max
+                </div>
+            </div>
             <?php endif; ?>
 
             <div
