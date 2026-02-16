@@ -1,12 +1,11 @@
 .plugin-api-listings {
-    max-width: 1270px;
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 15px 30px;
+    padding: 15px;
 
     .sort-form {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
         justify-content: flex-start;
         gap: 1rem;
         margin-bottom: 15px;
@@ -14,14 +13,51 @@
             background-color: #fff;
             border-width: 1px;
             height: 45px;
-            color: #252525;
-            border-color: #252525;
-            width: 300px !important;
-            max-width: 100%;
+            color: #6B7280;
+            border-color: #D1D5DB;
             height: 45px;
             appearance: auto;
             font-size: 16px;
-            padding: 0 5px !important;
+            padding: 0 19px !important;
+        }
+
+        .bedroom-filter-container,
+        .bathroom-filter-container {
+            width: 50%;
+
+            select {
+                width: 100%;
+            }
+        }
+    }
+
+    .listing-filter-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #d9d9d9;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+    }
+
+    .listing-filter-clear-all {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Arial', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        color: #1e3449;
+        cursor: pointer;
+        img {
+            width: 20px;
         }
     }
 
@@ -30,15 +66,39 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: flex-start;
+        align-items: center;
         gap: 1rem;
-        margin-bottom: 15px;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
     }
 
     .listing-filter-pill {
-        background-color: #1b5774;
-        color: white;
+        background-color: #d9d9d9;
+        color: #1e3449;
         padding: 10px 20px;
         border-radius: 30px;
+        pointer-events: auto;
+        cursor: pointer;
+        align-items: center;
+        gap: 10px;
+
+        span {
+            font-family: 'Arial', sans-serif;
+            font-weight: 700;
+            font-size: 10px;
+        }
+    }
+
+    .listing-result-count {
+        font-family: 'Arial', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        color: #1e3449;
+        align-items: center;
     }
 
      #api-listings-loading-spinner {
@@ -72,31 +132,68 @@
     }
 
     .button-api-listing {
-        font-size: 18px;
+        font-size: 16px;
         padding: 15px 25px;
         font-weight: 700;
         color: var(--button-text-color);
         background-color: var(--button-color);
         font-family: 'Arial', sans-serif;
-        border-radius: 6px;
+        // border-radius: 6px;
         text-transform: uppercase;
-        margin-top: 15px;
+        margin-top: 10px;
         line-height: 1;
         text-decoration: none;
     }
 }
 
 #plugin-api-listings-container {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 20px;
+    position: relative;
 
-    @media (min-width: 768px) {
-        grid-template-columns: repeat(2, 1fr);
+    .next,
+    .prev {
+        position: absolute;
+        top: 38%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        z-index: 10;
+        border-radius: 100%;
+        background-color: white;
+        color: white;
+        padding: 15px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    @media (min-width: 1024px) {
-        grid-template-columns: repeat(3, 1fr);
+    .next {
+        right: 5px;
+    }
+
+    .prev {
+        left: 5px;
+    }
+
+    &.not-slider {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 20px;
+    
+        @media (min-width: 768px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    
+        @media (min-width: 1024px) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    &.is-slider {
+        .unit-listing-wrapper {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
     }
 
     .no-listings-found {
@@ -129,8 +226,8 @@
 
     .meta-data,
     .meta-data p {
-        font-size: 20px;
-        margin-top: 15px;
+        font-size: 18px;
+        margin-top: 10px;
         color: #252525;
         font-family: 'Arial', sans-serif;
     }
@@ -139,17 +236,19 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        margin-top: 15px;
+        margin-top: 10px;
         margin-bottom: 15px;
     }
 
     .unit-price {
-        font-size: 34px;
+        font-size: 30px;
         color: #252525;
+        font-weight: 700;
         font-family: 'Arial', sans-serif;
     }
 
     .listing-number,
+    .lot-number,
     .list-date,
     .sos-number {
         font-size: 14px;
@@ -157,11 +256,33 @@
         font-family: 'Arial', sans-serif;
     }
 
+    &.rounded-corners {
+        .unit-image {
+            border-radius: 10px;
+        }
+    }
+
     .unit-image {
         background-size: cover;
         background-position: center;
         min-height: 350px;
         position: relative;
+        overflow: hidden;
+
+        .listing-banner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            width: 150%;
+            background-color: #1b5774;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 34px;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
     }
 
     .reduced-price {
@@ -188,6 +309,7 @@
         .meta-data p,
         .unit-price,
         .listing-number,
+        .lot-number,
         .list-date,
         .sos-number,
         .unit-title {

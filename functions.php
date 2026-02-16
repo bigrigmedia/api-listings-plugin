@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 1.75
+ * Version: 2.0
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '1.75');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.0');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -713,47 +713,54 @@ class BrmApiListingsPlugin {
     public function api_listings_cards_callback($atts, $content = '') {
         $atts = shortcode_atts(array(
             'new-only' => 'false',
-            'white-notice-text' => 'false'
+            'featured-homes' => 'false',
+            'brokered-only' => 'false',
+            'active-only' => 'false',
+            'white-notice-text' => 'false',
+            'white-card-text' => 'false',
+            'hide-filters' => 'true',
+            'slider' => 'false',
+            'sos-number' => ''
         ), $atts, 'api_listings_cards');
 
         $card_color = get_option('api_listings_card_color', '#26bbe0');
         $button_color = get_option('api_listings_button_color', '#287092');
         $button_text_color = get_option('api_listings_button_text_color', '#ffffff');
-        $card_text_white = get_option('api_listings_card_text_white', false) ? 'white-card' : '';
+        $card_text_white = get_option('api_listings_card_text_white', false) || $atts['white-card-text'] === 'true' ? 'white-card' : '';
         $card_drop_shadow = get_option('api_listings_card_drop_shadow', false) ? 'card-drop-shadow' : '';
+        $is_slider = $atts['slider'] === 'true' ? 'is-slider' : 'not-slider';
         $section_id = 'api-listings-' . uniqid();
-        
+        $rounded_corners = $card_color ? '' : 'rounded-corners';
         ob_start();
         ?>
         <div id="<?php echo esc_attr($section_id); ?>" class="plugin-api-listings">
-            <?php if (!is_front_page()) : ?>
+            <?php if (!is_front_page() && $atts['hide-filters'] === 'false') : ?>
             <form class="sort-form">
-                <div>
+                <div style="display: none;">
                     <select id="listing-sos-number" name="sos_number">
                         <option value="">Filter by Home Type</option>
                         <option value="Community Owned - New">New Construction</option>
                         <option value="used">Previously Owned</option>
                     </select>
                 </div>
-                <div>
+                <div class="bedroom-filter-container">
                     <select id="listing-bedrooms" name="bedrooms">
-                        <option value="">Filter by Bedrooms</option>
+                        <option value="">Beds</option>
                         <option value="1">1 Bedroom</option>
                         <option value="2">2 Bedrooms</option>
                         <option value="3">3 Bedrooms</option>
                         <option value="4">4 Bedrooms</option>
                     </select>
                 </div>
-                <div>
+                <div class="bathroom-filter-container">
                     <select id="listing-bathrooms" name="bathrooms">
-                        <option value="">Filter by Bathrooms</option>
+                        <option value="">Baths</option>
                         <option value="1">1 Bathroom</option>
                         <option value="2">2 Bathrooms</option>
                         <option value="3">3 Bathrooms</option>
-                        <option value="4">4 Bathrooms</option>
                     </select>
                 </div>
-                <div>
+                <div style="display: none;">
                     <input type="number" id="listing-min-price" name="min_price" placeholder="Min Price">
                     <input type="number" id="listing-max-price" name="max_price" placeholder="Max Price">
                 </div>
@@ -765,19 +772,31 @@ class BrmApiListingsPlugin {
                     </select>
                 </div>
             </form>
-
-            <div class="listing-filter-pills">
-                <div class="listing-filter-pill bedrooms" style="display: none;">
-                    <span></span> Bed
+            
+            <div class="listing-filter-container">
+                <div class="listing-filter-pills">
+                    <div class="listing-result-count">
+                    </div>
+                    <div class="listing-filter-pill bedrooms" style="display: none;">
+                        <span></span>
+                        <img src="https://www.legacymhc.com/app/themes/sage/assets/images/clear-filter.svg">
+                    </div>
+                    <div class="listing-filter-pill bathrooms" style="display: none;">
+                        <span></span>
+                        <img src="https://www.legacymhc.com/app/themes/sage/assets/images/clear-filter.svg">
+                    </div>
+                    <div class="listing-filter-pill min-price" style="display: none;">
+                        <span></span>
+                        <img src="https://www.legacymhc.com/app/themes/sage/assets/images/clear-filter.svg">
+                    </div>
+                    <div class="listing-filter-pill max-price" style="display: none;">
+                        <span></span>
+                        <img src="https://www.legacymhc.com/app/themes/sage/assets/images/clear-filter.svg">
+                    </div>
                 </div>
-                <div class="listing-filter-pill bathrooms" style="display: none;">
-                    <span></span> Bath
-                </div>
-                <div class="listing-filter-pill min-price" style="display: none;">
-                    <span></span> Min
-                </div>
-                <div class="listing-filter-pill max-price" style="display: none;">
-                    <span></span> Max
+                <div class="listing-filter-clear-all">
+                    CLEAR FILTERS
+                    <img src="https://www.legacymhc.com/app/themes/sage/assets/images/clear-filters.svg">
                 </div>
             </div>
             <?php endif; ?>
@@ -786,14 +805,24 @@ class BrmApiListingsPlugin {
             id="plugin-api-listings-container"
             <?php if (is_front_page()) { echo 'data-home="true"'; } ?>
             <?php if ($atts['new-only'] === 'true') { echo 'data-new-only="true"'; } ?>
+            <?php if ($atts['active-only'] === 'true') { echo 'data-active-only="true"'; } ?>
             <?php if ($atts['white-notice-text'] === 'true') { echo 'data-white-notice-text="true"'; } ?>
-            class="<?php echo esc_attr($card_text_white); ?> <?php echo esc_attr($card_drop_shadow); ?>"
+            <?php if ($atts['featured-homes'] === 'true') { echo 'data-featured-homes="true"'; } ?>
+            <?php if ($atts['brokered-only'] === 'true') { echo 'data-brokered-only="true"'; } ?>
+            <?php if ($atts['slider'] === 'true') { echo 'data-slider="true"'; } ?>
+            <?php echo 'data-sos-number="' . esc_attr($atts['sos-number']) . '"'; ?>
+
+            class="
+            <?php echo esc_attr($card_text_white); ?>
+            <?php echo esc_attr($card_drop_shadow); ?>
+            <?php echo esc_attr($rounded_corners); ?>
+            <?php echo esc_attr($is_slider); ?>"
             >
             </div>
 
             <div id="api-listings-loading-spinner" style="display: none;">Loading Home Listings...</div>
             
-            <?php if (!is_front_page()) : ?>
+            <?php if (!is_front_page() && $atts['slider'] !== 'true') : ?>
                 <div id="listings-pagination-container">
                     <a id="load-listings-btn" class="button-api-listing" style="display: none">Load More...</a>
                 </div>
