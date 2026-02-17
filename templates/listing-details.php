@@ -131,7 +131,7 @@ endif;
         $details = [
             'Lot Number' => $property_n,
             'Status'   => $purchase,
-            'Listing Number'    => $property_n . '/' . $listdate,
+            //'Listing Number'    => $property_n . '/' . $listdate,
             'Address'   => $address . ', ' . $city_name . ', ' . $state_name . ' ' . $zipcode,
             'Price'     => '$' . $price,
             'Make'    => $make,
@@ -149,7 +149,7 @@ endif;
 
         $print_details = [
             'Lot Number' => $property_n,
-            'Listing Number'    => $property_n . '/' . $listdate,
+            //'Listing Number'    => $property_n . '/' . $listdate,
             'Address'   => $address . ', ' . $city_name . ', ' . $state_name . ' ' . $zipcode,
             'Price'     => '$' . $price,
             'Year Built'   => $year_built,
@@ -187,7 +187,7 @@ endif;
 
         <div class="property-api-inner">
             <h1 class="api-property-title"><?= $title ?></h1>
-            <?php if($property_n): ?>
+            <?php if($property_n && 0): ?>
             <p class="api-property-listing-number">Listing #: <?= $property_n ?>/<?= $listdate ?></p>
             <?php endif; ?>
             <div class="api-property-meta">
