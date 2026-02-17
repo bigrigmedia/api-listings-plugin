@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 2.1
+ * Version: 2.2
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.1');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.2');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -719,6 +719,7 @@ class BrmApiListingsPlugin {
             'white-notice-text' => 'false',
             'white-card-text' => 'false',
             'hide-filters' => 'true',
+            'hide-filters-classic' => 'false',
             'slider' => 'false',
             'sos-number' => ''
         ), $atts, 'api_listings_cards');
@@ -799,6 +800,19 @@ class BrmApiListingsPlugin {
                     <img src="https://www.legacymhc.com/app/themes/sage/assets/images/clear-filters.svg">
                 </div>
             </div>
+            <?php endif; ?>
+
+
+            <?php if (!is_front_page() && $atts['hide-filters-classic'] === 'false') : ?>
+            <form class="sort-form-classic">
+                <div>
+                    <select id="listing-sos-number" name="sos_number">
+                        <option value="">Filter by Home Type</option>
+                        <option value="Community Owned - New">New Construction</option>
+                        <option value="used">Previously Owned</option>
+                    </select>
+                </div>
+            </form>
             <?php endif; ?>
 
             <div
