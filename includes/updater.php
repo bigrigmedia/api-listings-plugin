@@ -21,7 +21,7 @@ class Updater {
 
         //$this->plugin_slug   = dirname ( plugin_basename( __DIR__ ) );
         $this->plugin_slug   = 'listings-api';
-        $this->version       = '2.3';
+        $this->version       = '2.35';
         $this->cache_key     = 'legacy-listings-api-updater';
         $this->cache_allowed = false;
 
