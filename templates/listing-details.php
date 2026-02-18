@@ -144,7 +144,7 @@ endif;
             'Width'   => $width,
             'Length'   => $length,
             'Phone'     => $phone_property,
-            'VIN'       => $vin,
+            //'VIN'       => $vin,
         ];
 
         $print_details = [

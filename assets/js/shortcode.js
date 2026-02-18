@@ -9,7 +9,7 @@ var featuredHomes = apiListingsContainer.getAttribute('data-featured-homes') ===
 var slider = apiListingsContainer.getAttribute('data-slider') === 'true';
 var whiteNoticeText = apiListingsContainer.getAttribute('data-white-notice-text') === 'true';
 
-var listingSosNumber = 'used'; // Initialize listingSosNumber as all
+var listingSosNumber = ''; // Initialize listingSosNumber as all
 var listingPurchaseType = ''; // Initialize listingPurchaseType as all
 var listingsBedrooms = ''; // Initialize listingsBedrooms as empty
 var listingsBathrooms = ''; // Initialize listingsBathrooms as empty
