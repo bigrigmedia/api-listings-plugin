@@ -209,13 +209,13 @@ endif;
                     <?php if ($gallery || $featured_image): ?>
                     <div class="api-property-gallery__large js-carousel-gallery">
                         <?php if ($featured_image): ?>
-                        <div class="api-property-gallery__item px-2">
+                        <div class="api-property-gallery__item ">
                             <a class="gallery-bg-img" style="background-image: url('<?= $featured_image ?>');" data-fancybox="property-gallery" data-src="<?= $featured_image ?>"></a>
                         </div>
                         <?php endif; ?>
 
                         <?php foreach ($gallery as $gallery_item): ?>
-                        <div class="api-property-gallery__item px-2">
+                        <div class="api-property-gallery__item ">
                             <a class="gallery-bg-img" style="background-image: url(<?= $gallery_item['url'] ?>);" data-fancybox="property-gallery" data-src="<?= $gallery_item['url'] ?>"></a>
                         </div>
                         <?php endforeach; ?>
@@ -223,20 +223,20 @@ endif;
                     <div class="api-property-gallery__nav js-carousel-nav">
 
                         <?php if ($featured_image): ?>
-                        <div class="api-property-gallery__item px-2">
+                        <div class="api-property-gallery__item ">
                             <a class="gallery-bg-img" style="background-image: url('<?= $featured_image ?>');" data-fancybox="property-gallery-nav" data-src="<?= $featured_image ?>"></a>
                         </div>
                         <?php endif; ?>
 
                         <?php foreach ($gallery as $gallery_item): ?>
-                        <div class="api-property-gallery__item px-2">
+                        <div class="api-property-gallery__item ">
                             <a class="gallery-bg-img" style="background-image: url(<?= $gallery_item['url'] ?>);" data-fancybox="property-gallery-nav" data-src="<?= $gallery_item['url'] ?>"></a>
                         </div>
                         <?php endforeach; ?>
                     </div>
                     <?php else: ?>
                     <div class="api-property-gallery__large js-carousel-gallery">
-                        <div class="api-property-gallery__item px-2">
+                        <div class="api-property-gallery__item ">
                             <div class="gallery-bg-img" style="background-image: url('https://www.legacymhc.com/app/themes/sage/assets/images/2026-coming-soon.png');">
                             </div>
                         </div>

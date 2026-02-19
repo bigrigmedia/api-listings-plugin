@@ -75,6 +75,8 @@
     
         .api-property-gallery__item {
             margin-bottom: 15px;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
         }
 
         .api-property-gallery__large .gallery-bg-img {
@@ -109,15 +111,19 @@
             border: none;
             font-size: 32px;
             width: 30px;
+            height: auto !important;
             fill: white;
+            margin: 0 !important;
         }
 
         .slick-next {
-            right: 15px;
+            right: 15px !important;
+            left: unset !important;
         }
 
         .slick-prev {
-            left: 15px;
+            left: 15px !important;
+            right: unset !important;
         }
     }
 
