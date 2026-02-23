@@ -1,4 +1,6 @@
 var apiListingsContainer = document.getElementById("plugin-api-listings-container");
+var noListingsFoundContainer = document.getElementById('no-listings-found-container');
+
 var isSiteHome = apiListingsContainer.getAttribute('data-home') === 'true';
 var queryVideoListings = apiListingsContainer.getAttribute('data-query-video') === 'true';
 var newOnly = apiListingsContainer.getAttribute('data-new-only') === 'true';
@@ -8,6 +10,7 @@ var sosNumber = apiListingsContainer.getAttribute('data-sos-number');
 var featuredHomes = apiListingsContainer.getAttribute('data-featured-homes') === 'true';
 var slider = apiListingsContainer.getAttribute('data-slider') === 'true';
 var whiteNoticeText = apiListingsContainer.getAttribute('data-white-notice-text') === 'true';
+var redirectUrl = apiListingsContainer.getAttribute('data-redirect-url');
 
 var listingSosNumber = ''; // Initialize listingSosNumber as all
 var listingPurchaseType = ''; // Initialize listingPurchaseType as all
@@ -229,6 +232,9 @@ function fetchListings() {
     // Reset the post count and clear the container
     currentListingCount = 0;
     apiListingsContainer.innerHTML = "";
+    if (noListingsFoundContainer) {
+        noListingsFoundContainer.style.display = "none";
+    }
 
     //Create query param for video
     var videoQuery = queryVideoListings ? "&video_tour" : "";
@@ -253,7 +259,17 @@ function fetchListings() {
             allListings = JSON.parse(ourRequest.responseText); // Store all fetched posts
 
             if (allListings.length === 0) {
-                apiListingsContainer.innerHTML = "<div class='no-listings-found' style='color: " + (whiteNoticeText ? "white" : "") + ";'><p>No listings found.</p></div>";
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //No longer using innerHTML to display the no listings found message
+                //apiListingsContainer.innerHTML = "<div class='no-listings-found' style='color: " + (whiteNoticeText ? "white" : "") + ";'><p>No listings found.</p></div>";
+                
+                if (noListingsFoundContainer) {
+                    noListingsFoundContainer.style.display = "block";
+                }
                 if (loadListingsBtn) {
                     loadListingsBtn.style.display = "none"; // Hide pagination buttons
                 }

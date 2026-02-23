@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 2.36
+ * Version: 2.4
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.36');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.4');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -721,7 +721,9 @@ class BrmApiListingsPlugin {
             'hide-filters' => 'true',
             'hide-filters-classic' => 'false',
             'slider' => 'false',
-            'sos-number' => ''
+            'sos-number' => '',
+            //Optional redirect URL if there are no listings found
+            'redirect-url' => ''
         ), $atts, 'api_listings_cards');
 
         $card_color = get_option('api_listings_card_color', '#26bbe0');
@@ -732,6 +734,11 @@ class BrmApiListingsPlugin {
         $is_slider = $atts['slider'] === 'true' ? 'is-slider' : 'not-slider';
         $section_id = 'api-listings-' . uniqid();
         $rounded_corners = $card_color ? '' : 'rounded-corners';
+        
+        //The inner content of the shortcode is what is displayed if there are no listings found
+        //Its container is set to display: none by default
+        //If there are no listings found its container is set to display: block by shortcode.js
+        $content = do_shortcode( $content ) ? do_shortcode( $content ) : '<p>No listings found.</p>';
         ob_start();
         ?>
         <div id="<?php echo esc_attr($section_id); ?>" class="plugin-api-listings">
@@ -824,6 +831,7 @@ class BrmApiListingsPlugin {
             <?php if ($atts['featured-homes'] === 'true') { echo 'data-featured-homes="true"'; } ?>
             <?php if ($atts['brokered-only'] === 'true') { echo 'data-brokered-only="true"'; } ?>
             <?php if ($atts['slider'] === 'true') { echo 'data-slider="true"'; } ?>
+            <?php if ($atts['redirect-url'] !== '') { echo 'data-redirect-url="' . esc_attr($atts['redirect-url']) . '"'; } ?>
             <?php echo 'data-sos-number="' . esc_attr($atts['sos-number']) . '"'; ?>
 
             class="
@@ -832,6 +840,15 @@ class BrmApiListingsPlugin {
             <?php echo esc_attr($rounded_corners); ?>
             <?php echo esc_attr($is_slider); ?>"
             >
+               
+            </div>
+
+            <div id="no-listings-found-container" style="display: none;">
+                <div class="no-listings-found" 
+                style="<?php echo $atts['white-notice-text'] === 'true' ? 'color: white;' : ''; ?>"
+                >
+                    <?php echo $content; ?>
+                </div>
             </div>
 
             <div id="api-listings-loading-spinner" style="display: none;">Loading Home Listings...</div>
