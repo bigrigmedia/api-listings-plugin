@@ -224,8 +224,22 @@ function updateResultCount(totalPosts) {
     jQuery('.listing-result-count').css('display', 'flex');
 }
 
+async function checkLength(apiRequest) {
+    try {
+        const response = await fetch(apiRequest);
+        if (response.ok) { // response.ok is true when status is 200-299
+            const data = await response.json();
+            return data.length;
+        }
+        throw new Error("Failed to fetch posts");
+    } catch (error) {
+        console.log(error.message || "Connection Error");
+        return 0;
+    }
+}
+
 // Function to fetch posts
-function fetchListings() {
+async function fetchListings() {
     // Show loading animation while fetching
     showApiLoading();
 
@@ -252,14 +266,25 @@ function fetchListings() {
         + videoQuery
         + featuredHomesQuery;
 
-    var ourRequest = new XMLHttpRequest();
-    ourRequest.open("GET", apiRequest);
-    ourRequest.onload = function () {
-        if (ourRequest.status >= 200 && ourRequest.status < 400) {
-            allListings = JSON.parse(ourRequest.responseText); // Store all fetched posts
+    var apiRequestBrokered =
+        "https://www.legacymhc.com/wp-json/wp/v2/properties?per_page=100&parent=" + propertyId + "&_embed"
+        + "&sos_number=" + encodeURIComponent("Brokered")
+
+    const brokeredListingsCount = await checkLength(apiRequestBrokered);
+    console.log('brokeredListingsCount:', brokeredListingsCount);
+
+    fetch(apiRequest)
+        .then(function (response) {
+            if (response.ok) { // response.ok is true when status is 200-299
+                return response.json();
+            }
+            throw new Error("Failed to fetch posts");
+        })
+        .then(function (data) {
+            allListings = data; // Store all fetched posts
 
             if (allListings.length === 0) {
-                if (redirectUrl) {
+                if (redirectUrl && brokeredListingsCount !== 0) {
                     window.location.href = redirectUrl;
                     return;
                 }
@@ -291,19 +316,11 @@ function fetchListings() {
             hideApiLoading(); // Hide loading animation after posts are displayed
             console.log('allListings.length:', allListings.length);
             createListingsSlider(allListings.length);
-
-        } else {
-            console.log("Failed to fetch posts");
-            hideApiLoading(); // Hide loading animation if fetch fails
-        }
-    };
-
-    ourRequest.onerror = function () {
-        console.log("Connection Error");
-        hideApiLoading(); // Hide loading animation on error
-    };
-
-    ourRequest.send();
+        })
+        .catch(function (error) {
+            console.log(error.message || "Connection Error");
+            hideApiLoading(); // Hide loading animation on error
+        });
 }
 
 function createListingsSlider(totalPosts) {
