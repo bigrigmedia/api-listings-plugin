@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 2.41
+ * Version: 2.42
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.41');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.42');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -723,7 +723,9 @@ class BrmApiListingsPlugin {
             'slider' => 'false',
             'sos-number' => '',
             //Optional redirect URL if there are no listings found
-            'redirect-url' => ''
+            'redirect-url' => '',
+            //OVerride for property ID. Used for testing purposes
+            'property-id-override' => ''
         ), $atts, 'api_listings_cards');
 
         $card_color = get_option('api_listings_card_color', '#26bbe0');
@@ -833,6 +835,7 @@ class BrmApiListingsPlugin {
             <?php if ($atts['slider'] === 'true') { echo 'data-slider="true"'; } ?>
             <?php if ($atts['redirect-url'] !== '') { echo 'data-redirect-url="' . esc_attr($atts['redirect-url']) . '"'; } ?>
             <?php echo 'data-sos-number="' . esc_attr($atts['sos-number']) . '"'; ?>
+            <?php if ($atts['property-id-override'] !== '') { echo 'data-property-id-override="' . esc_attr($atts['property-id-override']) . '"'; } ?>
 
             class="
             <?php echo esc_attr($card_text_white); ?>

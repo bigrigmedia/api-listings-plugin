@@ -1,5 +1,6 @@
 var apiListingsContainer = document.getElementById("plugin-api-listings-container");
 var noListingsFoundContainer = document.getElementById('no-listings-found-container');
+var propertyIdOverride = apiListingsContainer.getAttribute('data-property-id-override');
 
 var isSiteHome = apiListingsContainer.getAttribute('data-home') === 'true';
 var queryVideoListings = apiListingsContainer.getAttribute('data-query-video') === 'true';
@@ -33,7 +34,7 @@ if (slider) {
     listingsPerBatch = 3;
 }
 
-var propertyId = api_listings_plugin_settings?.property_id;
+var propertyId = propertyIdOverride ? propertyIdOverride : api_listings_plugin_settings?.property_id;
 
 // Locate the load more and load less buttons
 var loadListingsBtn = document.getElementById("load-listings-btn");
