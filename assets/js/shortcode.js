@@ -13,8 +13,8 @@ var slider = apiListingsContainer.getAttribute('data-slider') === 'true';
 var whiteNoticeText = apiListingsContainer.getAttribute('data-white-notice-text') === 'true';
 var redirectUrl = apiListingsContainer.getAttribute('data-redirect-url');
 
-var listingSosNumber = ''; // Initialize listingSosNumber as all
-var listingPurchaseType = ''; // Initialize listingPurchaseType as all
+var listingSosNumber = ''; // Initialize listingSosNumber as empty (all)
+var listingPurchaseType = ''; // Initialize listingPurchaseType as empty (all)
 var listingsBedrooms = ''; // Initialize listingsBedrooms as empty
 var listingsBathrooms = ''; // Initialize listingsBathrooms as empty
 var listingsMinPrice = ''; // Initialize listingsMinPrice as empty
