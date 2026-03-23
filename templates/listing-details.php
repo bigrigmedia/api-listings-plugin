@@ -525,6 +525,7 @@ endif;
                         <input class="x-oh" autocomplete="off" type="text" id="xo-name" name="xoname" placeholder="Your name here">
                         <label class="x-oh" for="email"></label>
                         <input class="x-oh" autocomplete="off" type="email" id="xo-email" name="xoemail" placeholder="Your e-mail here">
+                        <p class="form-disclaimer" style="display: none; font-size: 0.75rem; margin-top: 0.75rem; color: #fff !important; line-height: 1.4;">By pressing the SEND button, you hereby consent to receive automated marketing phone, email, and/or SMS messages from Legacy Communities using the contact information above. Consent is not required for residency application or approval. Message and data rates may apply. Message frequency varies. Wireless carriers are not liable for delayed or undelivered messages. Text [HELP] for help and [STOP] to cancel. For questions, please contact us. <a href="/privacy-policy/" style="color: #fff; text-decoration: underline; font-weight: bold; font-size: 0.75rem;">View our Privacy Policy</a>.</p>
                     </form>
                 </div>
             </div>

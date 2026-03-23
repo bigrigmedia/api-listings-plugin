@@ -129,14 +129,38 @@ class BrmApiListingsPlugin {
             'API Listings',
             'manage_options',
             'brm-api-listings',
-            array($this, 'admin_page')
+            array($this, 'listing_module_page')
+        );
+
+        add_options_page(
+            'API Listings Contact Form',
+            'API Listings Contact Form',
+            'manage_options',
+            'brm-api-listings-contact-form',
+            array($this, 'listing_contact_form_page')
+        );
+
+        add_options_page(
+            'API Listings Tour Form',
+            'API Listings Tour Form',
+            'manage_options',
+            'brm-api-listings-tour-form',
+            array($this, 'listing_tour_form_page')
+        );
+
+        add_options_page(
+            'API Listings Landing Page Form',
+            'API Listings Landing Page Form',
+            'manage_options',
+            'brm-api-listings-landing-form',
+            array($this, 'listing_landing_form_page')
         );
     }
     
     /**
      * Admin page callback
      */
-    public function admin_page() {
+    public function listing_module_page() {
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
@@ -151,6 +175,60 @@ class BrmApiListingsPlugin {
         <?php
     }
     
+    /**
+     * Contact form page callback
+     */
+    public function listing_contact_form_page() {
+        ?>
+        <div class="wrap">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('api_listings_contact_form_settings');
+                do_settings_sections('api_listings_contact_form_settings');
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Tour form page callback
+     */
+    public function listing_tour_form_page() {
+        ?>
+        <div class="wrap">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('api_listings_tour_form_settings');
+                do_settings_sections('api_listings_tour_form_settings');
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Landing page form page callback
+     */
+    public function listing_landing_form_page() {
+        ?>
+        <div class="wrap">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('api_listings_landing_form_settings');
+                do_settings_sections('api_listings_landing_form_settings');
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
+    }
+
     /**
      * Initialize admin settings
      */
@@ -493,9 +571,387 @@ class BrmApiListingsPlugin {
                 'description' => 'Set the top margin of the details page on mobile'
             )
         );
+
+        // --- Contact Form Settings Page ---
+        add_settings_section(
+            'api_listings_contact_form_section',
+            'Contact Form Settings',
+            array($this, 'contact_form_section_callback'),
+            'api_listings_contact_form_settings'
+        );
+
+        register_setting('api_listings_contact_form_settings', 'api_listings_shortcode_contact_form_action');
+
+        add_settings_field(
+            'api_listings_shortcode_contact_form_action_field',
+            'Form Action',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_contact_form_settings',
+            'api_listings_contact_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_contact_form_action',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_contact_form_settings', 'api_listings_shortcode_contact_form_message_field_id');
+
+        add_settings_field(
+            'api_listings_shortcode_contact_form_message_field_id_field',
+            'Message Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_contact_form_settings',
+            'api_listings_contact_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_contact_form_message_field_id',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_contact_form_settings', 'api_listings_shortcode_contact_form_bg_color');
+
+        add_settings_field(
+            'api_listings_shortcode_contact_form_bg_color_field',
+            'Background Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_contact_form_settings',
+            'api_listings_contact_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_contact_form_bg_color',
+                'default' => '#ffffff'
+            )
+        );
+
+        register_setting('api_listings_contact_form_settings', 'api_listings_shortcode_contact_form_label_color');
+
+        add_settings_field(
+            'api_listings_shortcode_contact_form_label_color_field',
+            'Label Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_contact_form_settings',
+            'api_listings_contact_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_contact_form_label_color',
+                'default' => '#000000'
+            )
+        );
+
+        register_setting('api_listings_contact_form_settings', 'api_listings_shortcode_contact_form_button_color');
+
+        add_settings_field(
+            'api_listings_shortcode_contact_form_button_color_field',
+            'Submit Button Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_contact_form_settings',
+            'api_listings_contact_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_contact_form_button_color',
+                'default' => '#287092'
+            )
+        );
+
+        register_setting('api_listings_contact_form_settings', 'api_listings_shortcode_contact_form_button_text_color');
+
+        add_settings_field(
+            'api_listings_shortcode_contact_form_button_text_color_field',
+            'Submit Button Text Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_contact_form_settings',
+            'api_listings_contact_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_contact_form_button_text_color',
+                'default' => '#ffffff'
+            )
+        );
+
+        // --- Tour Form Settings Page ---
+        add_settings_section(
+            'api_listings_tour_form_section',
+            'Tour Form Settings',
+            array($this, 'tour_form_section_callback'),
+            'api_listings_tour_form_settings'
+        );
+
+        register_setting('api_listings_tour_form_settings', 'api_listings_shortcode_tour_form_action');
+
+        add_settings_field(
+            'api_listings_shortcode_tour_form_action_field',
+            'Form Action',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_tour_form_settings',
+            'api_listings_tour_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_tour_form_action',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_tour_form_settings', 'api_listings_shortcode_tour_form_contact_method_id');
+
+        add_settings_field(
+            'api_listings_shortcode_tour_form_contact_method_id_field',
+            'Contact Method Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_tour_form_settings',
+            'api_listings_tour_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_tour_form_contact_method_id',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_tour_form_settings', 'api_listings_shortcode_tour_form_tour_date_id');
+
+        add_settings_field(
+            'api_listings_shortcode_tour_form_tour_date_id_field',
+            'Tour Date Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_tour_form_settings',
+            'api_listings_tour_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_tour_form_tour_date_id',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_tour_form_settings', 'api_listings_shortcode_tour_form_message_id');
+
+        add_settings_field(
+            'api_listings_shortcode_tour_form_message_id_field',
+            'Message Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_tour_form_settings',
+            'api_listings_tour_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_tour_form_message_id',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_tour_form_settings', 'api_listings_shortcode_tour_form_bg_color');
+
+        add_settings_field(
+            'api_listings_shortcode_tour_form_bg_color_field',
+            'Background Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_tour_form_settings',
+            'api_listings_tour_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_tour_form_bg_color',
+                'default' => '#ffffff'
+            )
+        );
+
+        register_setting('api_listings_tour_form_settings', 'api_listings_shortcode_tour_form_label_color');
+
+        add_settings_field(
+            'api_listings_shortcode_tour_form_label_color_field',
+            'Label Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_tour_form_settings',
+            'api_listings_tour_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_tour_form_label_color',
+                'default' => '#000000'
+            )
+        );
+
+        register_setting('api_listings_tour_form_settings', 'api_listings_shortcode_tour_form_button_color');
+
+        add_settings_field(
+            'api_listings_shortcode_tour_form_button_color_field',
+            'Submit Button Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_tour_form_settings',
+            'api_listings_tour_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_tour_form_button_color',
+                'default' => '#287092'
+            )
+        );
+
+        register_setting('api_listings_tour_form_settings', 'api_listings_shortcode_tour_form_button_text_color');
+
+        add_settings_field(
+            'api_listings_shortcode_tour_form_button_text_color_field',
+            'Submit Button Text Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_tour_form_settings',
+            'api_listings_tour_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_tour_form_button_text_color',
+                'default' => '#ffffff'
+            )
+        );
+
+        // --- Landing Page Form Settings Page ---
+        add_settings_section(
+            'api_listings_landing_form_section',
+            'Landing Page Form Settings',
+            array($this, 'landing_form_section_callback'),
+            'api_listings_landing_form_settings'
+        );
+
+        register_setting('api_listings_landing_form_settings', 'api_listings_shortcode_landing_form_action');
+
+        add_settings_field(
+            'api_listings_shortcode_landing_form_action_field',
+            'Form Action',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_landing_form_settings',
+            'api_listings_landing_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_landing_form_action',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_landing_form_settings', 'api_listings_shortcode_landing_form_contact_method_id');
+
+        add_settings_field(
+            'api_listings_shortcode_landing_form_contact_method_id_field',
+            'Contact Method Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_landing_form_settings',
+            'api_listings_landing_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_landing_form_contact_method_id',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_landing_form_settings', 'api_listings_shortcode_landing_form_tour_date_id');
+
+        add_settings_field(
+            'api_listings_shortcode_landing_form_tour_date_id_field',
+            'Tour Date Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_landing_form_settings',
+            'api_listings_landing_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_landing_form_tour_date_id',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_landing_form_settings', 'api_listings_shortcode_landing_form_message_id');
+
+        add_settings_field(
+            'api_listings_shortcode_landing_form_message_id_field',
+            'Message Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_landing_form_settings',
+            'api_listings_landing_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_landing_form_message_id',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_landing_form_settings', 'api_listings_shortcode_landing_form_bg_color');
+
+        add_settings_field(
+            'api_listings_shortcode_landing_form_bg_color_field',
+            'Background Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_landing_form_settings',
+            'api_listings_landing_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_landing_form_bg_color',
+                'default' => '#ffffff'
+            )
+        );
+
+        register_setting('api_listings_landing_form_settings', 'api_listings_shortcode_landing_form_label_color');
+
+        add_settings_field(
+            'api_listings_shortcode_landing_form_label_color_field',
+            'Label Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_landing_form_settings',
+            'api_listings_landing_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_landing_form_label_color',
+                'default' => '#000000'
+            )
+        );
+
+        register_setting('api_listings_landing_form_settings', 'api_listings_shortcode_landing_form_button_color');
+
+        add_settings_field(
+            'api_listings_shortcode_landing_form_button_color_field',
+            'Submit Button Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_landing_form_settings',
+            'api_listings_landing_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_landing_form_button_color',
+                'default' => '#287092'
+            )
+        );
+
+        register_setting('api_listings_landing_form_settings', 'api_listings_shortcode_landing_form_button_text_color');
+
+        add_settings_field(
+            'api_listings_shortcode_landing_form_button_text_color_field',
+            'Submit Button Text Color',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_landing_form_settings',
+            'api_listings_landing_form_section',
+            array(
+                'type' => 'color',
+                'option_name' => 'api_listings_shortcode_landing_form_button_text_color',
+                'default' => '#ffffff'
+            )
+        );
         
     }
     
+    /**
+     * Contact form settings section callback
+     */
+    public function contact_form_section_callback() {
+        echo '<p>Configure contact form settings below.</p>';
+        echo '<p>Use the shortcode <code>[api_listings_contact_form]</code> to display the contact form on your page.</p>';
+    }
+
+    /**
+     * Tour form settings section callback
+     */
+    public function tour_form_section_callback() {
+        echo '<p>Configure tour scheduling form settings below.</p>';
+        echo '<p>Use the shortcode <code>[api_listings_tour_form]</code> to display the tour form on your page.</p>';
+    }
+
+    /**
+     * Landing page form settings section callback
+     */
+    public function landing_form_section_callback() {
+        echo '<p>Configure landing page form settings below.</p>';
+        echo '<p>Use the shortcode <code>[api_listings_landing_form]</code> to display the landing page form on your page.</p>';
+    }
+
     /**
      * Settings section callback
      */
@@ -565,7 +1021,13 @@ class BrmApiListingsPlugin {
      * Enqueue admin scripts and styles
      */
     public function admin_enqueue_scripts($hook) {
-        if ('settings_page_brm-api-listings' !== $hook) {
+        $allowed_pages = array(
+            'settings_page_brm-api-listings',
+            'settings_page_brm-api-listings-contact-form',
+            'settings_page_brm-api-listings-tour-form',
+            'settings_page_brm-api-listings-landing-form',
+        );
+        if (!in_array($hook, $allowed_pages, true)) {
             return;
         }
         
@@ -705,6 +1167,9 @@ class BrmApiListingsPlugin {
     public function register_shortcodes() {
         add_shortcode('api_listings_cards', array($this, 'api_listings_cards_callback'));
         add_shortcode('api_listing_details', array($this, 'api_listing_details_callback'));
+        add_shortcode('api_listings_contact_form', array($this, 'api_listings_contact_form_callback'));
+        add_shortcode('api_listings_tour_form', array($this, 'api_listings_tour_form_callback'));
+        add_shortcode('api_listings_landing_form', array($this, 'api_listings_landing_form_callback'));
     }
     
     /**
@@ -870,6 +1335,195 @@ class BrmApiListingsPlugin {
                 --button-text-color: <?php echo esc_attr($button_text_color); ?>;
             }
         </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode callback for contact form
+     */
+    public function api_listings_contact_form_callback($atts, $content = '') {
+        $atts = shortcode_atts(array(), $atts, 'api_listings_contact_form');
+
+        $form_action = get_option('api_listings_shortcode_contact_form_action', '');
+        $message_field_id = get_option('api_listings_shortcode_contact_form_message_field_id', '');
+        $recaptcha_site_key = get_option('api_listings_recaptcha_site_key', '');
+        $bg_color = get_option('api_listings_shortcode_contact_form_bg_color', '#ffffff');
+        $label_color = get_option('api_listings_shortcode_contact_form_label_color', '#000000');
+        $button_color = get_option('api_listings_shortcode_contact_form_button_color', '#287092');
+        $button_text_color = get_option('api_listings_shortcode_contact_form_button_text_color', '#ffffff');
+
+        ob_start();
+        ?>
+        <div class="api-listings-contact-form" style="--form-bg-color: <?php echo esc_attr($bg_color); ?>; --form-label-color: <?php echo esc_attr($label_color); ?>; --form-button-color: <?php echo esc_attr($button_color); ?>; --form-button-text-color: <?php echo esc_attr($button_text_color); ?>;">
+            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>">
+                <p>
+                    <label for="contact-first-name">First Name</label>
+                    <input type="text" id="contact-first-name" name="first_name" required />
+                </p>
+                <p>
+                    <label for="contact-last-name">Last Name</label>
+                    <input type="text" id="contact-last-name" name="last_name" required />
+                </p>
+                <p>
+                    <label for="contact-email">Email</label>
+                    <input type="email" id="contact-email" name="email" required />
+                </p>
+                <p>
+                    <label for="contact-phone">Phone</label>
+                    <input type="tel" id="contact-phone" name="phone" />
+                </p>
+                <p>
+                    <label for="<?php echo esc_attr($message_field_id ?: 'contact-message'); ?>">Message</label>
+                    <textarea id="<?php echo esc_attr($message_field_id ?: 'contact-message'); ?>" name="message" rows="4"></textarea>
+                </p>
+
+                <?php if ($recaptcha_site_key) : ?>
+                <div>
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($recaptcha_site_key); ?>"></div>
+                </div>
+                <?php endif; ?>
+
+                <p>
+                    <button type="submit">Submit</button>
+                </p>
+            </form>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode callback for tour form
+     */
+    public function api_listings_tour_form_callback($atts, $content = '') {
+        $atts = shortcode_atts(array(), $atts, 'api_listings_tour_form');
+
+        $form_action = get_option('api_listings_shortcode_tour_form_action', '');
+        $contact_method_id = get_option('api_listings_shortcode_tour_form_contact_method_id', '');
+        $tour_date_id = get_option('api_listings_shortcode_tour_form_tour_date_id', '');
+        $message_id = get_option('api_listings_shortcode_tour_form_message_id', '');
+        $recaptcha_site_key = get_option('api_listings_recaptcha_site_key', '');
+        $bg_color = get_option('api_listings_shortcode_tour_form_bg_color', '#ffffff');
+        $label_color = get_option('api_listings_shortcode_tour_form_label_color', '#000000');
+        $button_color = get_option('api_listings_shortcode_tour_form_button_color', '#287092');
+        $button_text_color = get_option('api_listings_shortcode_tour_form_button_text_color', '#ffffff');
+
+        ob_start();
+        ?>
+        <div class="api-listings-tour-form" style="--form-bg-color: <?php echo esc_attr($bg_color); ?>; --form-label-color: <?php echo esc_attr($label_color); ?>; --form-button-color: <?php echo esc_attr($button_color); ?>; --form-button-text-color: <?php echo esc_attr($button_text_color); ?>;">
+            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>">
+                <p>
+                    <label for="tour-first-name">First Name</label>
+                    <input type="text" id="tour-first-name" name="first_name" required />
+                </p>
+                <p>
+                    <label for="tour-last-name">Last Name</label>
+                    <input type="text" id="tour-last-name" name="last_name" required />
+                </p>
+                <p>
+                    <label for="tour-email">Email</label>
+                    <input type="email" id="tour-email" name="email" required />
+                </p>
+                <p>
+                    <label for="tour-phone">Phone</label>
+                    <input type="tel" id="tour-phone" name="phone" />
+                </p>
+                <fieldset class="api-listings-form-checkboxes" id="<?php echo esc_attr($contact_method_id ?: 'tour-contact-method'); ?>">
+                    <legend>Preferred Contact Method</legend>
+                    <label><input type="checkbox" name="contact_method[]" value="phone" /> Phone</label>
+                    <label><input type="checkbox" name="contact_method[]" value="email" /> Email</label>
+                    <label><input type="checkbox" name="contact_method[]" value="text" /> Text</label>
+                </fieldset>
+                <p>
+                    <label for="<?php echo esc_attr($tour_date_id ?: 'tour-date'); ?>">Preferred Tour Date</label>
+                    <input type="date" id="<?php echo esc_attr($tour_date_id ?: 'tour-date'); ?>" name="tour_date" />
+                </p>
+                <p>
+                    <label for="<?php echo esc_attr($message_id ?: 'tour-message'); ?>">Message</label>
+                    <textarea id="<?php echo esc_attr($message_id ?: 'tour-message'); ?>" name="message" rows="4"></textarea>
+                </p>
+
+                <?php if ($recaptcha_site_key) : ?>
+                <div>
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($recaptcha_site_key); ?>"></div>
+                </div>
+                <?php endif; ?>
+
+                <p>
+                    <button type="submit">Schedule Tour</button>
+                </p>
+            </form>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode callback for landing page form
+     */
+    public function api_listings_landing_form_callback($atts, $content = '') {
+        $atts = shortcode_atts(array(), $atts, 'api_listings_landing_form');
+
+        $form_action = get_option('api_listings_shortcode_landing_form_action', '');
+        $contact_method_id = get_option('api_listings_shortcode_landing_form_contact_method_id', '');
+        $tour_date_id = get_option('api_listings_shortcode_landing_form_tour_date_id', '');
+        $message_id = get_option('api_listings_shortcode_landing_form_message_id', '');
+        $recaptcha_site_key = get_option('api_listings_recaptcha_site_key', '');
+        $bg_color = get_option('api_listings_shortcode_landing_form_bg_color', '#ffffff');
+        $label_color = get_option('api_listings_shortcode_landing_form_label_color', '#000000');
+        $button_color = get_option('api_listings_shortcode_landing_form_button_color', '#287092');
+        $button_text_color = get_option('api_listings_shortcode_landing_form_button_text_color', '#ffffff');
+
+        ob_start();
+        ?>
+        <div class="api-listings-landing-form" style="--form-bg-color: <?php echo esc_attr($bg_color); ?>; --form-label-color: <?php echo esc_attr($label_color); ?>; --form-button-color: <?php echo esc_attr($button_color); ?>; --form-button-text-color: <?php echo esc_attr($button_text_color); ?>;">
+            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>">
+                <p>
+                    <label for="landing-first-name">First Name</label>
+                    <input type="text" id="landing-first-name" name="first_name" required />
+                </p>
+                <p>
+                    <label for="landing-last-name">Last Name</label>
+                    <input type="text" id="landing-last-name" name="last_name" required />
+                </p>
+                <p>
+                    <label for="landing-email">Email</label>
+                    <input type="email" id="landing-email" name="email" required />
+                </p>
+                <p>
+                    <label for="landing-phone">Phone</label>
+                    <input type="tel" id="landing-phone" name="phone" />
+                </p>
+                <fieldset class="api-listings-form-checkboxes" id="<?php echo esc_attr($contact_method_id ?: 'landing-contact-method'); ?>">
+                    <legend>Preferred Contact Method</legend>
+                    <label><input type="checkbox" name="contact_method[]" value="phone" /> Phone</label>
+                    <label><input type="checkbox" name="contact_method[]" value="email" /> Email</label>
+                    <label><input type="checkbox" name="contact_method[]" value="text" /> Text</label>
+                </fieldset>
+                <p>
+                    <label for="<?php echo esc_attr($tour_date_id ?: 'landing-tour-date'); ?>">Preferred Tour Date</label>
+                    <input type="date" id="<?php echo esc_attr($tour_date_id ?: 'landing-tour-date'); ?>" name="tour_date" />
+                </p>
+                <p>
+                    <label for="<?php echo esc_attr($message_id ?: 'landing-message'); ?>">Message</label>
+                    <textarea id="<?php echo esc_attr($message_id ?: 'landing-message'); ?>" name="message" rows="4"></textarea>
+                </p>
+
+                <?php if ($recaptcha_site_key) : ?>
+                <div>
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($recaptcha_site_key); ?>"></div>
+                </div>
+                <?php endif; ?>
+
+                <p>
+                    <button type="submit">Submit</button>
+                </p>
+            </form>
+        </div>
         <?php
         return ob_get_clean();
     }
