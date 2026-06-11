@@ -1,4 +1,5 @@
 var apiListingsContainer = document.getElementById("plugin-api-listings-container");
+var apilistingsSection = document.querySelectorAll(".plugin-api-listings");
 var noListingsFoundContainer = document.getElementById('no-listings-found-container');
 var propertyIdOverride = apiListingsContainer.getAttribute('data-property-id-override');
 
@@ -7,11 +8,24 @@ var queryVideoListings = apiListingsContainer.getAttribute('data-query-video') =
 var newOnly = apiListingsContainer.getAttribute('data-new-only') === 'true';
 var brokeredOnly = apiListingsContainer.getAttribute('data-brokered-only') === 'true';
 var activeOnly = apiListingsContainer.getAttribute('data-active-only') === 'true';
+var randomize = apiListingsContainer.getAttribute('data-randomize') === 'true';
 var sosNumber = apiListingsContainer.getAttribute('data-sos-number');
 var featuredHomes = apiListingsContainer.getAttribute('data-featured-homes') === 'true';
 var slider = apiListingsContainer.getAttribute('data-slider') === 'true';
 var whiteNoticeText = apiListingsContainer.getAttribute('data-white-notice-text') === 'true';
 var redirectUrl = apiListingsContainer.getAttribute('data-redirect-url');
+
+//Element shown if there are no community owned listings found and no brokered listings found
+var noListingsElements = apiListingsContainer.getAttribute('data-no-listings-elements') ? apiListingsContainer.getAttribute('data-no-listings-elements') : '.no-listings-element';
+//Element shown if there are community owned listings found but no brokered listings found
+var noBrokeredElements = apiListingsContainer.getAttribute('data-no-brokered-elements') ? apiListingsContainer.getAttribute('data-no-brokered-elements') : '.no-brokered-element';
+//Element shown if there are community owned listings found and brokered listings found (shown initially, all other elements are hidden)
+var listingsFoundElements = apiListingsContainer.getAttribute('data-listings-found-elements') ? apiListingsContainer.getAttribute('data-listings-found-elements') : '.listings-found-element';
+//For the scenario where there are only brokered listings found, the page will redirect to the redirect URL (should be brokered listings page)
+
+console.log('noListingsElements:', noListingsElements);
+console.log('noBrokeredElements:', noBrokeredElements);
+console.log('listingsFoundElements:', listingsFoundElements);
 
 var listingSosNumber = ''; // Initialize listingSosNumber as empty (all)
 var listingPurchaseType = ''; // Initialize listingPurchaseType as empty (all)
@@ -19,7 +33,7 @@ var listingsBedrooms = ''; // Initialize listingsBedrooms as empty
 var listingsBathrooms = ''; // Initialize listingsBathrooms as empty
 var listingsMinPrice = ''; // Initialize listingsMinPrice as empty
 var listingsMaxPrice = ''; // Initialize listingsMaxPrice as empty
-var listingSortOrder = 'newest'; // Default sort order is newest to oldest
+var listingSortOrder = '&listdate=newest'; // Default sort order is newest to oldest
 
 var allListings = []; // Store all fetched posts
 var currentListingCount = 0; // Track the number of posts currently displayed
@@ -36,12 +50,6 @@ if (slider) {
 
 var propertyId = propertyIdOverride ? propertyIdOverride : api_listings_plugin_settings?.property_id;
 
-// Locate the load more and load less buttons
-var loadListingsBtn = document.getElementById("load-listings-btn");
-
-// Locate the loading spinner
-var loadingListingsSpinner = document.getElementById("api-listings-loading-spinner");
-
 if (newOnly) {
     listingSosNumber = 'Community Owned - New';
 } else if (brokeredOnly) {
@@ -53,6 +61,26 @@ if (newOnly) {
 if(activeOnly) {
     listingPurchaseType = '100';
 }
+
+// If randomize or brokered only is true, the listings will be randomized
+if(randomize || brokeredOnly) {
+    listingSortOrder = '&randomize';
+}
+
+noListingsElements = document.querySelectorAll(noListingsElements);
+console.log('noListingsElements:', noListingsElements);
+
+listingsFoundElements = document.querySelectorAll(listingsFoundElements);
+console.log('listingsFoundElements:', listingsFoundElements);
+
+noBrokeredElements = document.querySelectorAll(noBrokeredElements);
+console.log('noBrokeredElements:', noBrokeredElements);
+
+// Locate the load more and load less buttons
+var loadListingsBtn = document.getElementById("load-listings-btn");
+
+// Locate the loading spinner
+var loadingListingsSpinner = document.getElementById("api-listings-loading-spinner");
 
 // Add event listeners for filtering and sorting
 document.getElementById('listing-sos-number')?.addEventListener('change', function () {
@@ -108,7 +136,7 @@ document.getElementById('listing-max-price')?.addEventListener('keydown', functi
 });
 
 document.getElementById('listing-sort-order')?.addEventListener('change', function () {
-    listingSortOrder = this.value; // Update listingSortOrder with the selected value (newest or oldest)
+    listingSortOrder = '&listdate=' + this.value; // Update listingSortOrder with the selected value (newest or oldest)
     fetchListings(); // Fetch the posts with the new sort order
 });
 
@@ -251,14 +279,28 @@ async function fetchListings() {
         noListingsFoundContainer.style.display = "none";
     }
 
+    noListingsElements.forEach(element => {
+        element.style.display = "none";
+    });
+    noBrokeredElements.forEach(element => {
+        element.style.display = "none";
+    });
+    listingsFoundElements.forEach(element => {
+        element.style.display = "block";
+    });
+
+    apilistingsSection.forEach(section => {
+        section.style.display = "block";
+    });
+
     //Create query param for video
     var videoQuery = queryVideoListings ? "&video_tour" : "";
     var featuredHomesQuery = featuredHomes ? "&featured_homes" : "";
 
     var apiRequest =
-        "https://www.legacymhc.com/wp-json/wp/v2/properties?per_page=" + listingCount + "&parent=" + propertyId + "&_embed"
+        "https://www.legacymhc.com/wp-json/wp/v2/properties?per_page=100&parent=" + propertyId + "&_embed"
         + "&sos_number=" + encodeURIComponent(listingSosNumber)
-        + "&listdate=" + encodeURIComponent(listingSortOrder) 
+        + listingSortOrder
         + "&bedrooms=" + encodeURIComponent(listingsBedrooms)
         + "&bathrooms=" + encodeURIComponent(listingsBathrooms)
         + "&min_price=" + encodeURIComponent(listingsMinPrice)
@@ -266,6 +308,8 @@ async function fetchListings() {
         + "&purchase_type=" + encodeURIComponent(listingPurchaseType)
         + videoQuery
         + featuredHomesQuery;
+
+    console.log('apiRequest:', apiRequest);
 
     var apiRequestBrokered =
         "https://www.legacymhc.com/wp-json/wp/v2/properties?per_page=100&parent=" + propertyId + "&_embed"
@@ -282,7 +326,19 @@ async function fetchListings() {
             throw new Error("Failed to fetch posts");
         })
         .then(function (data) {
-            allListings = data; // Store all fetched posts
+            allListings = data; // Store all fetched posts in allListings variable
+
+            if(allListings.length > 0) {
+                if(brokeredListingsCount === 0 && noBrokeredElements.length > 0) {
+                    listingsFoundElements.forEach(element => {
+                        element.style.display = "none";
+                    });
+
+                    noBrokeredElements.forEach(element => {
+                        element.style.display = "block";
+                    });
+                }
+            }
 
             if (allListings.length === 0) {
                 if (redirectUrl && brokeredListingsCount !== 0) {
@@ -290,12 +346,26 @@ async function fetchListings() {
                     return;
                 }
 
-                //No longer using innerHTML to display the no listings found message
-                //apiListingsContainer.innerHTML = "<div class='no-listings-found' style='color: " + (whiteNoticeText ? "white" : "") + ";'><p>No listings found.</p></div>";
+                if(noListingsElements.length > 0) {
+                    //Nested within noListingsElements condition so the section is only hidden if a no listings element is found.
+                    //This is done because the apiListingsSection includes its own no listings message that is set by wrapping the shortcode around content (no-listings-found-container)
+                    apilistingsSection.forEach(section => {
+                        section.style.display = "none";
+                    });
+                }
+
+                noListingsElements.forEach(element => {
+                    element.style.display = "block";
+                });
                 
+                listingsFoundElements.forEach(element => {
+                    element.style.display = "none";
+                });
+
                 if (noListingsFoundContainer) {
                     noListingsFoundContainer.style.display = "block";
                 }
+
                 if (loadListingsBtn) {
                     loadListingsBtn.style.display = "none"; // Hide pagination buttons
                 }
@@ -311,6 +381,8 @@ async function fetchListings() {
                 const indexB = order.indexOf(b.acf.sos_number);
                 return indexA - indexB;
             });
+
+            allListings = allListings.slice(0, listingCount);
 
             displayListings(); // Display the first set of posts
             updateResultCount(allListings.length);
@@ -509,7 +581,7 @@ function renderHTML(postData) {
 
     ourHTMLString += "<div class=unit-links>";
     ourHTMLString += "<strong class='unit-price'>" + removeDecimal + "</strong>";
-    ourHTMLString += "<a href='/unit-detail?id=" + postData.id + "' class='button-api-listing'>" + "Learn More" + "</a>";
+    ourHTMLString += "<a href='/unit-detail?id=" + postData.id + "' class='button-api-listing api-listing-card-button'>" + "Learn More" + "</a>";
     ourHTMLString += "</div>";
 
     if(0){
@@ -524,7 +596,7 @@ function renderHTML(postData) {
         ourHTMLString += "<div class='list-date'>" + "Listed: " + formattedDate + "</div>";
     }
 
-    ourHTMLString += "<p class='sos-number'>";
+    ourHTMLString += "<div class='sos-number'>";
     if (postData.acf.sos_number === "Community Owned - New") {
         ourHTMLString += "CO-N";
     } else if (postData.acf.sos_number === "Community Owned - Used") {
@@ -532,7 +604,7 @@ function renderHTML(postData) {
     } else if (postData.acf.sos_number === "Brokered") {
         ourHTMLString += "BRK";
     }
-    ourHTMLString += "</p>";
+    ourHTMLString += "</div>";
     ourHTMLString += "</div>";
     ourHTMLString += "</div></div></div>";
 

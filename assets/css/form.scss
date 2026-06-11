@@ -1,7 +1,9 @@
 .api-listings-contact-form,
 .api-listings-tour-form,
 .api-listings-landing-form {
-    max-width: 600px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2rem;
     background-color: var(--form-bg-color, #ffffff);
     border-radius: 4px;
@@ -17,11 +19,36 @@
             margin: 0;
         }
 
+        .api-listings-form-row {
+            display: flex;
+            gap: 1rem;
+
+            p {
+                flex: 1;
+                min-width: 0;
+            }
+
+            @media (max-width: 700px) {
+                flex-direction: column;
+            }
+        }
+
         label {
             font-weight: 600;
             margin-bottom: 0.35rem;
             font-size: 0.9rem;
             color: var(--form-label-color, #000000);
+        }
+
+        .form-disclaimer {
+            font-size: 0.75rem;
+            margin-top: 0.75rem;
+            line-height: 1.4;
+            color: var(--form-label-color, #000000);
+
+            a {
+                color: var(--form-label-color, #000000);
+            }
         }
 
         input[type="text"],
@@ -30,13 +57,15 @@
         input[type="date"],
         select,
         textarea {
-            width: 100%;
+            width: 100% !important;
             padding: 0.6rem 0.75rem;
+            margin-bottom: 0 !important;
             border: 1px solid #D1D5DB;
             border-radius: 4px;
             font-size: 1rem;
             font-family: inherit;
-            background-color: #fff;
+            background-color: #fff !important;
+            color: #303030 !important;
             transition: border-color 0.2s ease;
             box-sizing: border-box;
 
@@ -49,6 +78,9 @@
 
         textarea {
             resize: vertical;
+            height: 150px !important;
+            width: 100% !important;
+            max-width: none !important;
         }
 
         .api-listings-form-checkboxes {
@@ -64,7 +96,7 @@
             }
 
             label {
-                display: flex;
+                display: flex !important;
                 align-items: center;
                 font-weight: normal;
                 gap: 0.4rem;
@@ -73,12 +105,13 @@
             }
 
             input[type="checkbox"] {
-                width: auto;
+                width: auto !important;
+                margin-bottom: 0 !important;
                 accent-color: var(--form-button-color, #287092);
             }
         }
 
-        button[type="submit"] {
+        .api-listings-form-submit {
             display: inline-block;
             padding: 0.7rem 1.75rem;
             background-color: var(--form-button-color, #287092);
@@ -94,6 +127,34 @@
             &:hover {
                 opacity: 0.85;
             }
+        }
+
+        .honeypot-fields {
+            display: none;
+        }
+
+        .x-oh {
+            /* IE 8 */
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+
+            /* IE 5-7 */
+            filter: alpha(opacity=0);
+
+            /* Netscape */
+            -moz-opacity: 0;
+
+            /* Safari 1.x */
+            -khtml-opacity: 0;
+
+            /* Good browsers */
+            opacity: 0;
+
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 0;
+            width: 0;
+            z-index: -1;
         }
     }
 }

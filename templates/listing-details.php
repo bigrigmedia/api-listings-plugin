@@ -357,6 +357,8 @@ endif;
                                 if (form.email) form.email.focus();
                                 return false;
                             }
+
+                            /*
                             
                             // Check Preferred Contact Method (checkboxes)
                             var contactMethodFieldName = form_settings['contact_method_field_id'] + '[]';
@@ -386,6 +388,7 @@ endif;
                                 return false;
                             }
                             
+                            
                             // Check "How did you hear about us?" dropdown
                             var referralField = form[form_settings['referral_source_field_id']];
                             if (!referralField || !referralField.value || referralField.value.trim() == '') {
@@ -393,6 +396,7 @@ endif;
                                 if (referralField) referralField.focus();
                                 return false;
                             }
+                            */
                             
                             // Check reCAPTCHA (if present)
                             if (typeof grecaptcha !== 'undefined') {
@@ -433,12 +437,12 @@ endif;
                             <input type="text" size="40" maxlength="200" id="phone" name="phone" value="" required="">
                         </div>
                         <div class="api-property-form-field">
-                            <label for="email">Email</label>
+                            <label for="email">Email *</label>
                             <input type="text" size="40" maxlength="200" id="email" name="email" value="">
                         </div>
 
                         <div class="api-property-form-field">
-                            <label class="api-property-form-check-label" for="<?= $form_settings['contact_method_field_id'] ?>_0">Preferred Contact Method <span class="required">*</span></label>
+                            <label class="api-property-form-check-label" for="<?= $form_settings['contact_method_field_id'] ?>_0">Preferred Contact Method</label>
 
                             <div class="api-property-form-check">
                                 <label>Phone Call</label>
@@ -455,7 +459,7 @@ endif;
                         </div>
 
                         <div class="api-property-form-field">
-                            <label for="<?= $form_settings['move_in_date_field_id'] ?>">How soon are you looking to move? <span class="required">*</span></label>
+                            <label for="<?= $form_settings['move_in_date_field_id'] ?>">How soon are you looking to move?</label>
                             <select id="<?= $form_settings['move_in_date_field_id'] ?>" name="<?= $form_settings['move_in_date_field_id'] ?>">
                                 <option value=""></option>
                                 <option value="1-3 Months">1-3 Months</option>
@@ -467,7 +471,7 @@ endif;
                         </div>
 
                         <div class="api-property-form-field">
-                            <label for="<?= $form_settings['referral_source_field_id'] ?>">How did you hear about us? <span class="required">*</span></label>
+                            <label for="<?= $form_settings['referral_source_field_id'] ?>">How did you hear about us?</label>
                             <select id="<?= $form_settings['referral_source_field_id'] ?>" name="<?= $form_settings['referral_source_field_id'] ?>">
                                 <option value=""></option>
                                 <option value="Google">Google</option>
@@ -525,7 +529,7 @@ endif;
                         <input class="x-oh" autocomplete="off" type="text" id="xo-name" name="xoname" placeholder="Your name here">
                         <label class="x-oh" for="email"></label>
                         <input class="x-oh" autocomplete="off" type="email" id="xo-email" name="xoemail" placeholder="Your e-mail here">
-                        <p class="form-disclaimer" style="display: none; font-size: 0.75rem; margin-top: 0.75rem; color: #fff !important; line-height: 1.4;">By pressing the SEND button, you hereby consent to receive automated marketing phone, email, and/or SMS messages from Legacy Communities using the contact information above. Consent is not required for residency application or approval. Message and data rates may apply. Message frequency varies. Wireless carriers are not liable for delayed or undelivered messages. Text [HELP] for help and [STOP] to cancel. For questions, please contact us. <a href="/privacy-policy/" style="color: #fff; text-decoration: underline; font-weight: bold; font-size: 0.75rem;">View our Privacy Policy</a>.</p>
+                        <p class="form-disclaimer" style="font-size: 0.75rem; margin-top: 0.75rem; line-height: 1.4;">By pressing the SEND button, you hereby consent to receive automated marketing phone, email, and/or SMS messages from Legacy Communities using the contact information above. Consent is not required for residency application or approval. Message and data rates may apply. Message frequency varies. Wireless carriers are not liable for delayed or undelivered messages. Text [HELP] for help and [STOP] to cancel. For questions, please contact us. <a href="/privacy-policy/" style="text-decoration: underline; font-weight: bold; font-size: 0.75rem;">View our Privacy Policy</a>.</p>
                     </form>
                 </div>
             </div>

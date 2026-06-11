@@ -183,7 +183,9 @@
         .agent-name,
         .agent-phone,
         .agent-email,
-        .api-property-form-field label {
+        .api-property-form-field label,
+        .form-disclaimer
+        .form-disclaimer a {
             color: #252525;
         }
 
@@ -192,7 +194,9 @@
             .agent-name,
             .agent-phone,
             .agent-email,
-            .api-property-form-field label {
+            .api-property-form-field label,
+            .form-disclaimer,
+            .form-disclaimer a {
                 color: white;
             }
         }

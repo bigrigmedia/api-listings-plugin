@@ -6,14 +6,6 @@
     }
 }
 
-.no-brokered-element {
-	display: none;
-
-    .editor-visual-editor & {
-        display: block;
-    }
-}
-
 .listings-found-element {
 	display: block;
 }
@@ -23,12 +15,6 @@
     margin: 0 auto;
     padding: 15px;
 
-    .white-notice-text {
-        &, & p, & a {
-            color: white;
-        }
-    }
-
     .sort-form,
     .sort-form-classic {
         display: flex;
@@ -36,10 +22,6 @@
         justify-content: flex-start;
         gap: 1rem;
         margin-bottom: 15px;
-        max-width: 1100px;
-        margin-left: auto;
-        margin-right: auto;
-
         select {
             background-color: #fff;
             border-width: 1px;
@@ -160,8 +142,6 @@
 
     #listings-pagination-container {
         text-align: left;
-        max-width: 1100px;
-        margin: auto;
     }
 
     .button-api-listing {
@@ -176,12 +156,6 @@
         margin-top: 10px;
         line-height: 1;
         text-decoration: none;
-
-        &.api-listing-card-button {
-            font-size: 10px;
-            margin-top: 2px;
-            padding: 10px 15px;
-        }
     }
 
 
@@ -227,9 +201,7 @@
     &.not-slider {
         display: grid;
         grid-template-columns: repeat(1, 1fr);
-        gap: 20px;
-        max-width: 1100px;
-        margin: auto;
+        gap: 40px;
     
         @media (min-width: 768px) {
             grid-template-columns: repeat(2, 1fr);
@@ -260,9 +232,8 @@
     }
 
     .unit-data {
-        min-height: 185px;
-        padding: 15px 5px;
-        padding-bottom: 0px;
+        min-height: 350px;
+        padding: 15px;
         text-align: left;
 
         a {
@@ -272,8 +243,8 @@
 
     .meta-data,
     .meta-data p {
-        font-size: 12px;
-        margin-top: 1px;
+        font-size: 18px;
+        margin-top: 10px;
         color: #252525;
         font-family: 'Arial', sans-serif;
     }
@@ -282,12 +253,12 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        margin-top: 2px;
-        margin-bottom: 4px;
+        margin-top: 10px;
+        margin-bottom: 15px;
     }
 
     .unit-price {
-        font-size: 20px !important;
+        font-size: 30px;
         color: #252525;
         font-weight: 700;
         font-family: 'Arial', sans-serif;
@@ -297,10 +268,9 @@
     .lot-number,
     .list-date,
     .sos-number {
-        font-size: 11px;
+        font-size: 14px;
         color: #252525;
         font-family: 'Arial', sans-serif;
-        line-height: 1;
     }
 
     &.rounded-corners {
@@ -312,7 +282,7 @@
     .unit-image {
         background-size: cover;
         background-position: center;
-        min-height: 255px;
+        min-height: 300px;
         position: relative;
         overflow: hidden;
 
@@ -320,13 +290,13 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-35deg);
+            transform: translate(-50%, -50%) rotate(-45deg);
             width: 150%;
             background-color: #1b5774;
             color: white;
-            padding: 10px 20px;
+            padding: 15px 20px;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 34px;
             font-family: 'Arial', sans-serif;
             text-align: center;
         }
@@ -344,10 +314,8 @@
     }
 
     .unit-title {
-        display: block;
-        font-size: 16px;
+        font-size: 24px;
         font-weight: 600;
-        line-height: 1.15;
         color: #252525;
         font-family: 'Arial', sans-serif;
         text-decoration: none !important;

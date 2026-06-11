@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 2.42
+ * Version: 2.61
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.42');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.61');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -76,6 +76,7 @@ class BrmApiListingsPlugin {
         
         // Frontend hooks
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'), 110);
+        add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
         add_action('init', array($this, 'register_shortcodes'));
 
         // Dequeue conflicting scripts - Use large number to ensure it runs last
@@ -84,6 +85,13 @@ class BrmApiListingsPlugin {
         // Add page templates
         add_filter('theme_page_templates', array($this, 'register_page_templates'));
         add_filter('template_include', array($this, 'add_page_template'));
+
+
+        // Register block categories
+        add_filter('block_categories_all', array($this, 'register_block_categories'), 10, 2);
+
+        // Set allowed block types
+        add_filter('allowed_block_types', array($this, 'set_allowed_block_types'), 20, 2);
     }
     
     /**
@@ -118,6 +126,41 @@ class BrmApiListingsPlugin {
      */
     private function load_dependencies() {
         // Include additional files - here
+        require_once BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR . 'includes/blocks/listings-intro-dual-cta/block.php';
+    }
+
+    /**
+     * Register block categories
+     */
+    public function register_block_categories($categories) {
+        return array_merge(
+            $categories,
+            [
+                [
+                    'slug'  => 'brm-api-listings',
+                    'title' => 'BRM API Listings',
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Set allowed block types
+     */
+    public function set_allowed_block_types($allowed_blocks) {
+        // If all blocks are allowed (true), keep it that way
+        if ($allowed_blocks === true) {
+            return true;
+        }
+        
+        // If it's an array, add your block to it
+        if (is_array($allowed_blocks)) {
+            //Keep existing blocks but add our new block
+            //$allowed_blocks[] = 'acf/example-block';
+            $allowed_blocks[] = 'acf/listings-intro-dual-cta';
+        }
+        
+        return $allowed_blocks;
     }
 
     /**
@@ -591,6 +634,36 @@ class BrmApiListingsPlugin {
             array(
                 'type' => 'text',
                 'option_name' => 'api_listings_shortcode_contact_form_action',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_contact_form_settings', 'api_listings_shortcode_contact_form_contact_method_id');
+
+        add_settings_field(
+            'api_listings_shortcode_contact_form_contact_method_id_field',
+            'Contact Method Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_contact_form_settings',
+            'api_listings_contact_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_contact_form_contact_method_id',
+                'default' => ''
+            )
+        );
+
+        register_setting('api_listings_contact_form_settings', 'api_listings_shortcode_contact_form_referral_source_id');
+
+        add_settings_field(
+            'api_listings_shortcode_contact_form_referral_source_id_field',
+            'Referral Source Field ID',
+            array($this, 'modular_settings_field_callback'),
+            'api_listings_contact_form_settings',
+            'api_listings_contact_form_section',
+            array(
+                'type' => 'text',
+                'option_name' => 'api_listings_shortcode_contact_form_referral_source_id',
                 'default' => ''
             )
         );
@@ -1084,6 +1157,14 @@ class BrmApiListingsPlugin {
             BRM_API_LISTINGS_PLUGIN_VERSION
         );
 
+        //Enqueue shame.scss to quickly fix style issues with the plugin
+        wp_enqueue_style(
+            'brm-api-listings-plugin-shame',
+            BRM_API_LISTINGS_PLUGIN_PLUGIN_URL . 'assets/css/shame.css',
+            array(),
+            BRM_API_LISTINGS_PLUGIN_VERSION
+        );
+
         //Enqueue Slick slider from CDN
         wp_enqueue_style(
             'slick-slider',
@@ -1138,6 +1219,26 @@ class BrmApiListingsPlugin {
     }
 
     /**
+     * Enqueue plugin styles inside the block editor so ACF block previews render correctly.
+     */
+    public function enqueue_block_editor_assets() {
+        wp_enqueue_style(
+            'brm-api-listings-plugin-editor',
+            BRM_API_LISTINGS_PLUGIN_PLUGIN_URL . 'dist/index.scss.css',
+            array(),
+            BRM_API_LISTINGS_PLUGIN_VERSION
+        );
+
+        //Enqueue shame.scss to quickly fix style issues with the plugin
+        wp_enqueue_style(
+            'brm-api-listings-plugin-shame',
+            BRM_API_LISTINGS_PLUGIN_PLUGIN_URL . 'assets/css/shame.css',
+            array(),
+            BRM_API_LISTINGS_PLUGIN_VERSION
+        );
+    }
+
+    /**
      * Register plugin page templates
      */
     public function register_page_templates($templates) {
@@ -1181,6 +1282,7 @@ class BrmApiListingsPlugin {
             'featured-homes' => 'false',
             'brokered-only' => 'false',
             'active-only' => 'false',
+            'randomize' => 'false',
             'white-notice-text' => 'false',
             'white-card-text' => 'false',
             'hide-filters' => 'true',
@@ -1189,7 +1291,11 @@ class BrmApiListingsPlugin {
             'sos-number' => '',
             //Optional redirect URL if there are no listings found
             'redirect-url' => '',
-            //OVerride for property ID. Used for testing purposes
+            //Optional selector for the elements to display if there are no listings found.
+            'no-listings-elements' => '',
+            //Optional selector for the elements to display if there are listings found.
+            'listings-found-elements' => '',
+            //Override for property ID. Used for testing purposes
             'property-id-override' => ''
         ), $atts, 'api_listings_cards');
 
@@ -1205,7 +1311,11 @@ class BrmApiListingsPlugin {
         //The inner content of the shortcode is what is displayed if there are no listings found
         //Its container is set to display: none by default
         //If there are no listings found its container is set to display: block by shortcode.js
-        $content = do_shortcode( $content ) ? do_shortcode( $content ) : '<p>No listings found.</p>';
+        $content = do_shortcode( $content ) ? do_shortcode( $content ) : '
+            <p>Homes in this community sell quickly, and availability can change at any time. If you’re interested in calling this neighborhood home, we encourage you to reach out so we can keep
+            you informed of upcoming opportunities.</p>
+            <p>For information about future availability, please contact us.</p>';
+        
         ob_start();
         ?>
         <div id="<?php echo esc_attr($section_id); ?>" class="plugin-api-listings">
@@ -1294,6 +1404,7 @@ class BrmApiListingsPlugin {
             <?php if (is_front_page()) { echo 'data-home="true"'; } ?>
             <?php if ($atts['new-only'] === 'true') { echo 'data-new-only="true"'; } ?>
             <?php if ($atts['active-only'] === 'true') { echo 'data-active-only="true"'; } ?>
+            <?php if ($atts['randomize'] === 'true') { echo 'data-randomize="true"'; } ?>
             <?php if ($atts['white-notice-text'] === 'true') { echo 'data-white-notice-text="true"'; } ?>
             <?php if ($atts['featured-homes'] === 'true') { echo 'data-featured-homes="true"'; } ?>
             <?php if ($atts['brokered-only'] === 'true') { echo 'data-brokered-only="true"'; } ?>
@@ -1301,6 +1412,8 @@ class BrmApiListingsPlugin {
             <?php if ($atts['redirect-url'] !== '') { echo 'data-redirect-url="' . esc_attr($atts['redirect-url']) . '"'; } ?>
             <?php echo 'data-sos-number="' . esc_attr($atts['sos-number']) . '"'; ?>
             <?php if ($atts['property-id-override'] !== '') { echo 'data-property-id-override="' . esc_attr($atts['property-id-override']) . '"'; } ?>
+            <?php if ($atts['no-listings-elements'] !== '') { echo 'data-no-listings-elements="' . esc_attr($atts['no-listings-elements']) . '"'; } ?>
+            <?php if ($atts['listings-found-elements'] !== '') { echo 'data-listings-found-elements="' . esc_attr($atts['listings-found-elements']) . '"'; } ?>
 
             class="
             <?php echo esc_attr($card_text_white); ?>
@@ -1312,7 +1425,7 @@ class BrmApiListingsPlugin {
             </div>
 
             <div id="no-listings-found-container" style="display: none;">
-                <div class="no-listings-found" 
+                <div class="no-listings-found <?php echo $atts['white-notice-text'] === 'true' ? 'white-notice-text' : ''; ?>" 
                 style="<?php echo $atts['white-notice-text'] === 'true' ? 'color: white;' : ''; ?>"
                 >
                     <?php echo $content; ?>
@@ -1339,13 +1452,47 @@ class BrmApiListingsPlugin {
         return ob_get_clean();
     }
 
+    public function honeypot_fields() {
+        echo '
+        <div class="honeypot-fields">
+        <label class="x-oh" for="xoname"></label>
+        <input class="x-oh" autocomplete="off" type="text" id="xo-name" name="xoname" placeholder="Your name here">
+        <label class="x-oh" for="xoemail"></label>
+        <input class="x-oh" autocomplete="off" type="email" id="xo-email" name="xoemail" placeholder="Your e-mail here">
+        </div>
+        ';
+    }
+
+    public function form_disclaimer() {
+        echo '
+        <p class="form-disclaimer" style="font-size: 0.75rem; margin-top: 0.75rem; line-height: 1.4;">By pressing the SEND button, you hereby consent to receive automated marketing phone, email, and/or SMS messages from Legacy Communities using the contact information above. Consent is not required for residency application or approval. Message and data rates may apply. Message frequency varies. Wireless carriers are not liable for delayed or undelivered messages. Text [HELP] for help and [STOP] to cancel. For questions, please contact us. <a href="/privacy-policy/" style="text-decoration: underline; font-weight: bold; font-size: 0.75rem;">View our Privacy Policy</a>.</p>
+        ';
+    }
+
+    public function form_validation_script() {
+        ob_start();
+        ?>
+        <script>
+            function checkForm(form) {
+                return true;
+            }
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
     /**
      * Shortcode callback for contact form
      */
     public function api_listings_contact_form_callback($atts, $content = '') {
-        $atts = shortcode_atts(array(), $atts, 'api_listings_contact_form');
+        $atts = shortcode_atts(array(
+            'submit-button-class' => 'api-listings-form-submit',
+        ), $atts, 'api_listings_contact_form');
 
+        $submit_button_class = $atts['submit-button-class'];
         $form_action = get_option('api_listings_shortcode_contact_form_action', '');
+        $contact_method_id = get_option('api_listings_shortcode_contact_form_contact_method_id', '');
+        $referral_source_id = get_option('api_listings_shortcode_contact_form_referral_source_id', '');
         $message_field_id = get_option('api_listings_shortcode_contact_form_message_field_id', '');
         $recaptcha_site_key = get_option('api_listings_recaptcha_site_key', '');
         $bg_color = get_option('api_listings_shortcode_contact_form_bg_color', '#ffffff');
@@ -1356,26 +1503,122 @@ class BrmApiListingsPlugin {
         ob_start();
         ?>
         <div class="api-listings-contact-form" style="--form-bg-color: <?php echo esc_attr($bg_color); ?>; --form-label-color: <?php echo esc_attr($label_color); ?>; --form-button-color: <?php echo esc_attr($button_color); ?>; --form-button-text-color: <?php echo esc_attr($button_text_color); ?>;">
-            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>">
+            <script>
+                function checkContactForm(form) {
+                    if (!form.first.value.trim()) {
+                        alert('Please enter your first name');
+                        form.first.focus();
+                        return false;
+                    }
+                    if (!form.last.value.trim()) {
+                        alert('Please enter your last name');
+                        form.last.focus();
+                        return false;
+                    }
+                    if (!form.email.value.trim()) {
+                        alert('Please enter your email');
+                        form.email.focus();
+                        return false;
+                    }
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value.trim())) {
+                        alert('Please enter a valid email address');
+                        form.email.focus();
+                        return false;
+                    }
+                    if (!form.phone.value.trim()) {
+                        alert('Please enter your phone number');
+                        form.phone.focus();
+                        return false;
+                    }
+                    var contactMethodName = '<?php echo esc_js($contact_method_id ?: 'contact_method'); ?>';
+                    var contactChecked = form.querySelectorAll('input[name="' + contactMethodName + '[]"]:checked');
+                    if (contactChecked.length === 0) {
+                        alert('Please select at least one preferred contact method');
+                        return false;
+                    }
+                    
+                    /*
+                    var referralField = form.querySelector('select[name="<?php echo esc_js($referral_source_id ?: 'referral_source'); ?>"]');
+                    if (!referralField || !referralField.value) {
+                        alert('Please select how you heard about us');
+                        if (referralField) referralField.focus();
+                        return false;
+                    }
+                    */
+
+                    if (typeof grecaptcha !== 'undefined') {
+                        try {
+                            var recaptchaResponse = grecaptcha.getResponse();
+                            if (!recaptchaResponse || recaptchaResponse.length === 0) {
+                                alert('Please complete the reCAPTCHA verification');
+                                return false;
+                            }
+                        } catch(e) {
+                            alert('Please complete the reCAPTCHA verification');
+                            return false;
+                        }
+                    }
+
+                    window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                        'event': 'formSubmission_success'
+                    });
+
+                    return true;
+                }
+            </script>
+            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>" onsubmit="return checkContactForm(this);" novalidate>
+                <div class="api-listings-form-row">
+                    <p>
+                        <label for="contact-first-name">First Name *</label>
+                        <input type="text" id="contact-first-name" name="first" required />
+                    </p>
+                    <p>
+                        <label for="contact-last-name">Last Name *</label>
+                        <input type="text" id="contact-last-name" name="last" required />
+                    </p>
+                </div>
+                <div class="api-listings-form-row">
+                    <p>
+                        <label for="contact-email">Email *</label>
+                        <input type="email" id="contact-email" name="email" required />
+                    </p>
+                    <p>
+                        <label for="contact-phone">Phone *</label>
+                        <input type="tel" id="contact-phone" name="phone" required/>
+                    </p>
+                </div>
+                <fieldset class="api-listings-form-checkboxes" id="contact-contact-method">
+                    <legend>Preferred Contact Method *</legend>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="phone" /> Phone</label>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="email" /> Email</label>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="text" /> Text</label>
+                </fieldset>
                 <p>
-                    <label for="contact-first-name">First Name</label>
-                    <input type="text" id="contact-first-name" name="first_name" required />
+                    <label for="contact-referral-source">How did you hear about us?</label>
+                    <select id="contact-referral-source" name="<?php echo esc_attr($referral_source_id ?: 'referral_source'); ?>">
+                        <option value=""></option>
+                        <option value="Google">Google</option>
+                        <option value="MH Village">MH Village</option>
+                        <option value="Retirenet.com">Retirenet.com</option>
+                        <option value="Zillow">Zillow</option>
+                        <option value="Social Media">Social Media</option>
+                        <option value="Drive By">Drive By</option>
+                        <option value="TV">TV</option>
+                        <option value="Realtor">Realtor</option>
+                        <option value="Newspaper/Magazine">Newspaper/Magazine</option>
+                        <option value="Resident Referral">Resident Referral</option>
+                        <option value="Event">Event</option>
+                        <option value="MLS">MLS</option>
+                        <option value="Radio">Radio</option>
+                        <option value="RV'r">RV'r</option>
+                        <option value="Phone Call">Phone Call</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </p>
                 <p>
-                    <label for="contact-last-name">Last Name</label>
-                    <input type="text" id="contact-last-name" name="last_name" required />
-                </p>
-                <p>
-                    <label for="contact-email">Email</label>
-                    <input type="email" id="contact-email" name="email" required />
-                </p>
-                <p>
-                    <label for="contact-phone">Phone</label>
-                    <input type="tel" id="contact-phone" name="phone" />
-                </p>
-                <p>
-                    <label for="<?php echo esc_attr($message_field_id ?: 'contact-message'); ?>">Message</label>
-                    <textarea id="<?php echo esc_attr($message_field_id ?: 'contact-message'); ?>" name="message" rows="4"></textarea>
+                    <label for="contact-message">Message</label>
+                    <textarea id="contact-message" name="<?php echo esc_attr($message_field_id ?: 'message'); ?>" rows="4"></textarea>
                 </p>
 
                 <?php if ($recaptcha_site_key) : ?>
@@ -1385,9 +1628,13 @@ class BrmApiListingsPlugin {
                 </div>
                 <?php endif; ?>
 
+                <?php $this->honeypot_fields(); ?>
+
                 <p>
-                    <button type="submit">Submit</button>
+                    <button type="submit" class="<?php echo esc_attr($submit_button_class); ?>">Send</button>
                 </p>
+
+                <?php $this->form_disclaimer(); ?>
             </form>
         </div>
         <?php
@@ -1398,8 +1645,11 @@ class BrmApiListingsPlugin {
      * Shortcode callback for tour form
      */
     public function api_listings_tour_form_callback($atts, $content = '') {
-        $atts = shortcode_atts(array(), $atts, 'api_listings_tour_form');
+        $atts = shortcode_atts(array(
+            'submit-button-class' => 'api-listings-form-submit',
+        ), $atts, 'api_listings_tour_form');
 
+        $submit_button_class = $atts['submit-button-class'];
         $form_action = get_option('api_listings_shortcode_tour_form_action', '');
         $contact_method_id = get_option('api_listings_shortcode_tour_form_contact_method_id', '');
         $tour_date_id = get_option('api_listings_shortcode_tour_form_tour_date_id', '');
@@ -1413,36 +1663,100 @@ class BrmApiListingsPlugin {
         ob_start();
         ?>
         <div class="api-listings-tour-form" style="--form-bg-color: <?php echo esc_attr($bg_color); ?>; --form-label-color: <?php echo esc_attr($label_color); ?>; --form-button-color: <?php echo esc_attr($button_color); ?>; --form-button-text-color: <?php echo esc_attr($button_text_color); ?>;">
-            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>">
-                <p>
-                    <label for="tour-first-name">First Name</label>
-                    <input type="text" id="tour-first-name" name="first_name" required />
-                </p>
-                <p>
-                    <label for="tour-last-name">Last Name</label>
-                    <input type="text" id="tour-last-name" name="last_name" required />
-                </p>
-                <p>
-                    <label for="tour-email">Email</label>
-                    <input type="email" id="tour-email" name="email" required />
-                </p>
-                <p>
-                    <label for="tour-phone">Phone</label>
-                    <input type="tel" id="tour-phone" name="phone" />
-                </p>
-                <fieldset class="api-listings-form-checkboxes" id="<?php echo esc_attr($contact_method_id ?: 'tour-contact-method'); ?>">
-                    <legend>Preferred Contact Method</legend>
-                    <label><input type="checkbox" name="contact_method[]" value="phone" /> Phone</label>
-                    <label><input type="checkbox" name="contact_method[]" value="email" /> Email</label>
-                    <label><input type="checkbox" name="contact_method[]" value="text" /> Text</label>
+            <script>
+                function checkTourForm(form) {
+                    if (!form.first.value.trim()) {
+                        alert('Please enter your first name');
+                        form.first.focus();
+                        return false;
+                    }
+                    if (!form.last.value.trim()) {
+                        alert('Please enter your last name');
+                        form.last.focus();
+                        return false;
+                    }
+                    if (!form.email.value.trim()) {
+                        alert('Please enter your email');
+                        form.email.focus();
+                        return false;
+                    }
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value.trim())) {
+                        alert('Please enter a valid email address');
+                        form.email.focus();
+                        return false;
+                    }
+                    if (!form.phone.value.trim()) {
+                        alert('Please enter your phone number');
+                        form.phone.focus();
+                        return false;
+                    }
+                    var contactMethodName = '<?php echo esc_js($contact_method_id ?: 'contact_method'); ?>';
+                    var contactChecked = form.querySelectorAll('input[name="' + contactMethodName + '[]"]:checked');
+                    if (contactChecked.length === 0) {
+                        alert('Please select at least one preferred contact method');
+                        return false;
+                    }
+                    var tourDateField = form.querySelector('input[name="<?php echo esc_js($tour_date_id ?: 'tour_date'); ?>"]');
+                    if (!tourDateField || !tourDateField.value) {
+                        alert('Please select a preferred tour date');
+                        if (tourDateField) tourDateField.focus();
+                        return false;
+                    }
+                    if (typeof grecaptcha !== 'undefined') {
+                        try {
+                            var recaptchaResponse = grecaptcha.getResponse();
+                            if (!recaptchaResponse || recaptchaResponse.length === 0) {
+                                alert('Please complete the reCAPTCHA verification');
+                                return false;
+                            }
+                        } catch(e) {
+                            alert('Please complete the reCAPTCHA verification');
+                            return false;
+                        }
+                    }
+
+                    window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                        'event': 'formSubmission_success'
+                    });
+
+                    return true;
+                }
+            </script>
+            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>" onsubmit="return checkTourForm(this);" novalidate>
+                <div class="api-listings-form-row">
+                    <p>
+                        <label for="tour-first-name">First Name *</label>
+                        <input type="text" id="tour-first-name" name="first" required />
+                    </p>
+                    <p>
+                        <label for="tour-last-name">Last Name *</label>
+                        <input type="text" id="tour-last-name" name="last" required />
+                    </p>
+                </div>
+                <div class="api-listings-form-row">
+                    <p>
+                        <label for="tour-email">Email *</label>
+                        <input type="email" id="tour-email" name="email" required />
+                    </p>
+                    <p>
+                        <label for="tour-phone">Phone *</label>
+                        <input type="tel" id="tour-phone" name="phone" required/>
+                    </p>
+                </div>
+                <fieldset class="api-listings-form-checkboxes" id="tour-contact-method">
+                    <legend>Preferred Contact Method *</legend>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="phone" /> Phone</label>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="email" /> Email</label>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="text" /> Text</label>
                 </fieldset>
                 <p>
-                    <label for="<?php echo esc_attr($tour_date_id ?: 'tour-date'); ?>">Preferred Tour Date</label>
-                    <input type="date" id="<?php echo esc_attr($tour_date_id ?: 'tour-date'); ?>" name="tour_date" />
+                    <label for="tour-date">Preferred Tour Date *</label>
+                    <input type="date" id="tour-date" name="<?php echo esc_attr($tour_date_id ?: 'tour_date'); ?>" />
                 </p>
                 <p>
-                    <label for="<?php echo esc_attr($message_id ?: 'tour-message'); ?>">Message</label>
-                    <textarea id="<?php echo esc_attr($message_id ?: 'tour-message'); ?>" name="message" rows="4"></textarea>
+                    <label for="tour-message">Message</label>
+                    <textarea id="tour-message" name="<?php echo esc_attr($message_id ?: 'message'); ?>" rows="4"></textarea>
                 </p>
 
                 <?php if ($recaptcha_site_key) : ?>
@@ -1452,9 +1766,13 @@ class BrmApiListingsPlugin {
                 </div>
                 <?php endif; ?>
 
+                <?php $this->honeypot_fields(); ?>
+
                 <p>
-                    <button type="submit">Schedule Tour</button>
+                    <button type="submit" class="<?php echo esc_attr($submit_button_class); ?>">Send</button>
                 </p>
+
+                <?php $this->form_disclaimer(); ?>
             </form>
         </div>
         <?php
@@ -1465,8 +1783,11 @@ class BrmApiListingsPlugin {
      * Shortcode callback for landing page form
      */
     public function api_listings_landing_form_callback($atts, $content = '') {
-        $atts = shortcode_atts(array(), $atts, 'api_listings_landing_form');
+        $atts = shortcode_atts(array(
+            'submit-button-class' => 'api-listings-form-submit',
+        ), $atts, 'api_listings_landing_form');
 
+        $submit_button_class = $atts['submit-button-class'];
         $form_action = get_option('api_listings_shortcode_landing_form_action', '');
         $contact_method_id = get_option('api_listings_shortcode_landing_form_contact_method_id', '');
         $tour_date_id = get_option('api_listings_shortcode_landing_form_tour_date_id', '');
@@ -1480,36 +1801,100 @@ class BrmApiListingsPlugin {
         ob_start();
         ?>
         <div class="api-listings-landing-form" style="--form-bg-color: <?php echo esc_attr($bg_color); ?>; --form-label-color: <?php echo esc_attr($label_color); ?>; --form-button-color: <?php echo esc_attr($button_color); ?>; --form-button-text-color: <?php echo esc_attr($button_text_color); ?>;">
-            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>">
-                <p>
-                    <label for="landing-first-name">First Name</label>
-                    <input type="text" id="landing-first-name" name="first_name" required />
-                </p>
-                <p>
-                    <label for="landing-last-name">Last Name</label>
-                    <input type="text" id="landing-last-name" name="last_name" required />
-                </p>
-                <p>
-                    <label for="landing-email">Email</label>
-                    <input type="email" id="landing-email" name="email" required />
-                </p>
-                <p>
-                    <label for="landing-phone">Phone</label>
-                    <input type="tel" id="landing-phone" name="phone" />
-                </p>
-                <fieldset class="api-listings-form-checkboxes" id="<?php echo esc_attr($contact_method_id ?: 'landing-contact-method'); ?>">
-                    <legend>Preferred Contact Method</legend>
-                    <label><input type="checkbox" name="contact_method[]" value="phone" /> Phone</label>
-                    <label><input type="checkbox" name="contact_method[]" value="email" /> Email</label>
-                    <label><input type="checkbox" name="contact_method[]" value="text" /> Text</label>
+            <script>
+                function checkLandingForm(form) {
+                    if (!form.first.value.trim()) {
+                        alert('Please enter your first name');
+                        form.first.focus();
+                        return false;
+                    }
+                    if (!form.last.value.trim()) {
+                        alert('Please enter your last name');
+                        form.last.focus();
+                        return false;
+                    }
+                    if (!form.email.value.trim()) {
+                        alert('Please enter your email');
+                        form.email.focus();
+                        return false;
+                    }
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value.trim())) {
+                        alert('Please enter a valid email address');
+                        form.email.focus();
+                        return false;
+                    }
+                    if (!form.phone.value.trim()) {
+                        alert('Please enter your phone number');
+                        form.phone.focus();
+                        return false;
+                    }
+                    var contactMethodName = '<?php echo esc_js($contact_method_id ?: 'contact_method'); ?>';
+                    var contactChecked = form.querySelectorAll('input[name="' + contactMethodName + '[]"]:checked');
+                    if (contactChecked.length === 0) {
+                        alert('Please select at least one preferred contact method');
+                        return false;
+                    }
+                    var tourDateField = form.querySelector('input[name="<?php echo esc_js($tour_date_id ?: 'tour_date'); ?>"]');
+                    if (!tourDateField || !tourDateField.value) {
+                        alert('Please select a preferred tour date');
+                        if (tourDateField) tourDateField.focus();
+                        return false;
+                    }
+                    if (typeof grecaptcha !== 'undefined') {
+                        try {
+                            var recaptchaResponse = grecaptcha.getResponse();
+                            if (!recaptchaResponse || recaptchaResponse.length === 0) {
+                                alert('Please complete the reCAPTCHA verification');
+                                return false;
+                            }
+                        } catch(e) {
+                            alert('Please complete the reCAPTCHA verification');
+                            return false;
+                        }
+                    }
+
+                    window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                        'event': 'formSubmission_success'
+                    });
+
+                    return true;
+                }
+            </script>
+            <form class="api-listings-form" method="post" action="<?php echo esc_url($form_action); ?>" onsubmit="return checkLandingForm(this);" novalidate>
+                <div class="api-listings-form-row">
+                    <p>
+                        <label for="landing-first-name">First Name *</label>
+                        <input type="text" id="landing-first-name" name="first" required />
+                    </p>
+                    <p>
+                        <label for="landing-last-name">Last Name *</label>
+                        <input type="text" id="landing-last-name" name="last" required />
+                    </p>
+                </div>
+                <div class="api-listings-form-row">
+                    <p>
+                        <label for="landing-email">Email *</label>
+                        <input type="email" id="landing-email" name="email" required />
+                    </p>
+                    <p>
+                        <label for="landing-phone">Phone *</label>
+                        <input type="tel" id="landing-phone" name="phone" required/>
+                    </p>
+                </div>
+                <fieldset class="api-listings-form-checkboxes" id="landing-contact-method">
+                    <legend>Preferred Contact Method *</legend>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="phone" /> Phone</label>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="email" /> Email</label>
+                    <label><input type="checkbox" name="<?php echo esc_attr($contact_method_id ?: 'contact_method'); ?>[]" value="text" /> Text</label>
                 </fieldset>
                 <p>
-                    <label for="<?php echo esc_attr($tour_date_id ?: 'landing-tour-date'); ?>">Preferred Tour Date</label>
-                    <input type="date" id="<?php echo esc_attr($tour_date_id ?: 'landing-tour-date'); ?>" name="tour_date" />
+                    <label for="landing-tour-date">Preferred Tour Date *</label>
+                    <input type="date" id="landing-tour-date" name="<?php echo esc_attr($tour_date_id ?: 'tour_date'); ?>" />
                 </p>
                 <p>
-                    <label for="<?php echo esc_attr($message_id ?: 'landing-message'); ?>">Message</label>
-                    <textarea id="<?php echo esc_attr($message_id ?: 'landing-message'); ?>" name="message" rows="4"></textarea>
+                    <label for="landing-message">Message</label>
+                    <textarea id="landing-message" name="<?php echo esc_attr($message_id ?: 'message'); ?>" rows="4"></textarea>
                 </p>
 
                 <?php if ($recaptcha_site_key) : ?>
@@ -1519,9 +1904,13 @@ class BrmApiListingsPlugin {
                 </div>
                 <?php endif; ?>
 
+                <?php $this->honeypot_fields(); ?>
+
                 <p>
-                    <button type="submit">Submit</button>
+                    <button type="submit" class="<?php echo esc_attr($submit_button_class); ?>">Send</button>
                 </p>
+
+                <?php $this->form_disclaimer(); ?>
             </form>
         </div>
         <?php

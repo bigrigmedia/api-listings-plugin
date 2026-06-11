@@ -1,0 +1,41 @@
+// ACF block: listings-intro-dual-cta
+.listings-api-intro-block {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 60px;
+
+    &__intro {
+        width: 100%;
+        max-width: 1500px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 2.5rem 15px;
+        box-sizing: border-box;
+    }
+
+    &__cta {
+        width: 100%;
+        position: relative;
+        box-sizing: border-box;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    &__cta--white-text {
+        h1, h2, h3, h4, h5, h6,
+        p, li, span, a, blockquote,
+        label, small, strong, em {
+            color: #fff;
+        }
+    }
+
+    &__cta-inner {
+        position: relative;
+        max-width: 1500px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 75px 15px;
+        box-sizing: border-box;
+    }
+}
