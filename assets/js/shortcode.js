@@ -504,7 +504,7 @@ function renderHTML(postData) {
 
     if (postData._embedded["wp:featuredmedia"]) {
         ourHTMLString +=
-            "<div class=unit-image style='background-image: url(" + postData._embedded["wp:featuredmedia"][0].source_url + ")'>";
+            "<a href='/unit-detail?id=" + postData.id + "' class=unit-image style='background-image: url(" + postData._embedded["wp:featuredmedia"][0].source_url + ")'>";
         if (price_original && price && priceDifference > 0 && 0) {
             ourHTMLString += "<div class='reduced-price'>" + "Price Cut: $" + priceDifference + "k</div>";
         }
@@ -517,7 +517,7 @@ function renderHTML(postData) {
             ourHTMLString += "<div class='listing-banner'>" + "PENDING" + "</div>";
         }
 
-        ourHTMLString += "</div>";
+        ourHTMLString += "</a>";
     } else {
         ourHTMLString += "<div class=unit-image style='background-image: url(https://www.legacymhc.com/app/themes/sage/assets/images/2026-coming-soon.png)'>";
         if (price_original && price && priceDifference > 0 && 0) {

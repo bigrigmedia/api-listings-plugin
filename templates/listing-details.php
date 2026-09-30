@@ -19,6 +19,96 @@ if (!isset($_GET['id'])):
     <?php
     return;
 endif;
+
+$host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
+
+// Remove port numbers if they exist (e.g., localhost:8080)
+$host = strtok($host, ':');
+
+// Extract the last two segments (domain + extension)
+$parts = explode('.', $host);
+$domain = implode('.', array_slice($parts, -2));
+
+//Check if domain is in array of allowed domains, set result to variable called $allowed_domain
+$allowed_domains = [
+    'highlandsatscotlandyards.com',
+    'sunshinemhc.com',
+    'lakegriffinisles.com',
+    'picciolalanding.com',
+    "crystalrivervillage.com",
+    "haciendavillagemhc.com",
+    "highlandcountryestates.com",
+    "lakeviewestatesflorida.com",
+    "pineridgemhp.com",
+    "shalimarvillagemhp.com",
+    "southwayvilla.com",
+    "sweetwateroaksmhc.com",
+    "timbervillagemhp.com",
+    "arcadiavillage.com",
+    "imperialoaksmhc.com",
+    "magnoliahillmhc.com",
+    "pelicanpalmsvillage.com",
+    "pelicanpiermhc.com",
+    "pelicanpierwest.com",
+    "rancherovillage.com",
+    "sundancefla.com",
+    "villageonthegreensmhc.com",
+    "bonnyshores.com",
+    "countryvillaestates.com",
+    "enchantedlakesmhrv.com",
+    "indianwoodmhc.com",
+    "lakebluemhp.com",
+    "lakepointefl.com",
+    "orangeacresmhc.com",
+    "pinetreeparkfl.com",
+    "quailrunestatesmhc.com",
+    "albuquerquemeadows.com",
+    "cascadevillagemhp.com",
+    "foxfieldmhc.com",
+    "longhavenestates.com",
+    "meadowlarkmhc.com",
+    "pleasantvalleymobileestates.com",
+    "silveradopinesmhc.com",
+    "terrabuenamhc.com",
+    "tradewindscommunity.com",
+    "twincedarsmhc.com",
+    "westerncarriage.com",
+    "westwoodvillagemhc.com",
+    "personal.test",
+    "aspenridgemhc.com",
+    "collinsaire.com",
+    "emeraldacresmhp.com",
+    "greenwayterracemhc.com",
+    "lagovistamhc.com",
+    "millelacsislandresort.com",
+    "parkvillagemh.com",
+    "poudrevalleymhc.com",
+    "sunsetparkmhc.com",
+    "vintageacres.com",
+    "westernplazamhc.com",
+    "baybridgemhc.com",
+    "bellwoodplace.com",
+    "cranberryrunmhc.com",
+    "eagleviewmhc.com",
+    "eldoradocourtmhc.com",
+    "greathillestates.com",
+    "independenceplacemhc.com",
+    "meadowledge.com",
+    "mogansmhc.com",
+    "ontarioshoresrvpark.com",
+    "radanteestates.com",
+    "redwingmhc.com",
+    "sandcastlemhc.com",
+    "seacoastresort.com",
+    "shadylakesrvresort.com",
+    "shawcrestmhc.com",
+    "southeastmhc.com",
+    "standrock.com",
+    "twinlakehomescommunity.com",
+    "whitehousecove.com"
+];
+$allowed_domain = in_array($domain, $allowed_domains);
+
 ?>
 
 <section id="<?php echo esc_attr($section_id); ?>" class="api-plugin-single-listing">
@@ -129,21 +219,21 @@ endif;
         }
 
         $details = [
-            'Lot Number' => $property_n,
+            'Community Type'   => $community,
             'Status'   => $purchase,
             //'Listing Number'    => $property_n . '/' . $listdate,
             'Address'   => $address . ', ' . $city_name . ', ' . $state_name . ' ' . $zipcode,
-            'Price'     => '$' . $price,
-            'Make'    => $make,
+            'Phone'     => $phone_property,
+            'Lot Number' => $property_n,
             'Year Built'   => $year_built,
+            'Price'     => '$' . $price,
             'Bedrooms'  => $bedrooms,
             'Bathrooms' => $bathrooms,
-            'Listing Type' => $sos,
-            'Community'   => $community,
             'Square Feet'   => $square_feet,
-            'Width'   => $width,
-            'Length'   => $length,
-            'Phone'     => $phone_property,
+            'Listing Type' => $sos,
+            //'Make'    => $make,
+            //'Width'   => $width,
+            //'Length'   => $length,
             //'VIN'       => $vin,
         ];
 
@@ -183,6 +273,27 @@ endif;
         $property_plan = $acf_fields['floor_plan'] ?? '';
 
         $contact_white = get_option('api_listings_contact_form_text_white', false) ? 'white-contact-form' : '';
+        $details_white = get_option('api_listings_contact_form_text_white', false) ? 'white-details' : '';
+
+        ob_start();
+        if ($details): ?>
+        <ul class="api-property-details" style="margin-top: 15px">
+            <?php foreach ($details as $key => $detail): ?>
+                <?php if ($detail): ?>
+                    <li class="property__detail <?= str_replace( " ", "_", $key ) ?>">
+                        <span >
+                            <strong><?= $key; ?>:</strong>
+                        </span>
+                        <span>
+                            <?= $detail ?>
+                        </span>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+        <button class="button-api-listing api-print-button" onclick="window.print()">Price Sheet</button>
+        <?php endif; 
+        $details_html = ob_get_clean();
         ?>
 
         <div class="property-api-inner">
@@ -197,15 +308,15 @@ endif;
                 <?php if($price): ?>
                     <span>&#36;<?= $price ?></span>
                 <?php endif; ?>
-                <?php if($bedrooms): ?>
+                <?php if($bedrooms && 0): ?>
                     <span>BR: <?= $bedrooms ?></span>
                 <?php endif; ?>
-                <?php if($bathrooms): ?>
+                <?php if($bathrooms && 0): ?>
                     <span>BA: <?= $bathrooms ?></span>
                 <?php endif; ?>
             </div>
             <div class="api-property-content">
-                <div class="api-property-gallery">
+                <div class="api-property-details-left">
                     <?php if ($gallery || $featured_image): ?>
                     <div class="api-property-gallery__large js-carousel-gallery">
                         <?php if ($featured_image): ?>
@@ -250,7 +361,7 @@ endif;
                             </div>
                         <?php endif; ?>
                         <div class="api-property-description-container">
-                            <?php if ($property_plan || $property_brochure): ?>
+                            <?php if (($property_plan || $property_brochure) && false): ?>
                             <div class="">
                                 <div class="property-documents">
                                 <h5>Available Property Documents:</h5>
@@ -265,272 +376,263 @@ endif;
                                 <!-- Possible Ad Placement  -->
                             </div>
                             <?php endif; ?>
-
-                            <?php if ($details): ?>
-                            <h5 class="api-property-details-title">Property Details</h5>
-                            <ul class="api-property-details">
-                                <?php foreach ($details as $key => $detail): ?>
-                                    <?php if ($detail): ?>
-                                        <li class="property__detail <?= str_replace( " ", "_", $key ) ?>">
-                                        <?php if ($key !== 'number'): ?>
-                                            <span class="ttu"><strong><?= $key; ?>:</strong></span>
-                                        <?php else: ?>
-                                            <span class="ttu"><strong>Listing <?= $key; ?>:</strong></span>
-                                        <?php endif; ?>
-                                        <span>
-                                            <?php if ($key !== 'phone'): ?>
-                                            <?= $detail ?>
-                                            <?php else: ?>
-                                            <a href="tel:<?= preg_replace('/[^0-9]/', '', $detail); ?>"><?= $detail; ?></a>
-                                            <?php endif; ?>
-                                        </span>
-                                        </li>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            </ul>
-                            <?php endif; ?>
-                            <div class="api-property-description--inner">
+                            <h5 class="api-property-details-title">Property Description</h5>
                             <?php if ($content): ?>
-                                <?php
-                                    $content = strip_tags($content);
-                                ?>
+                            <div class="api-property-description--inner">
+                                    <?php
+                                        $content = strip_tags($content);
+                                    ?>
 
-                                <p class="api-property-the-content"><?= $content ?></p>
-                            <?php endif; ?>
-                            <button class="button-api-listing api-print-button" onclick="window.print()">Price Sheet</button>
-
-                            <?php if ($video_tour): ?>
-                            <hr class=" mt-0 mb-15">
-                            <div class="property__video ">
-                                <h5>Video Tour</h5>
-                                <p>Watch the video below for a full walkthrough of the property, showcasing its layout, features, and flow.</p>
-                                <video class="w-full h-auto" src="<?= $video_tour ?>" controls></video>
+                                    <p class="api-property-the-content"><?= $content ?></p>
                             </div>
                             <?php endif; ?>
+                            <?php if(!$allowed_domain): ?>
+                                <?= $details_html ?>
+                            <?php endif; ?>
+                            <div class="api-property-description--inner">
+                                <?php if ($video_tour && 0): ?>
+                                <hr class=" mt-0 mb-15">
+                                <div class="property__video ">
+                                    <h5>Video Tour</h5>
+                                    <p>Watch the video below for a full walkthrough of the property, showcasing its layout, features, and flow.</p>
+                                    <video class="w-full h-auto" src="<?= $video_tour ?>" controls></video>
+                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="api-property-contact <?= $contact_white ?>">
-                    <p class="contact-intro">Contact Our Sales Office</p>
-                    <p class="agent-info">
-                        <strong class="agent-name"><?= $sales_name ?></strong><br>
-                        <a class="agent-phone" href="tel:<?= $phone_link ?>"><?= $sales_phone ?></a><br>
-                        <a class="agent-email" href="mailto:<?= $sales_email ?>"><?= $sales_email ?></a>
-                    </p>
-                    <script type="text/javascript">
-                        let form_settings = <?= json_encode($form_settings) ?>;
-                        
-                        function checkForm(form) {
-                            // Check First Name
-                            if (!form.first || form.first.value.trim() == '') {
-                                alert('Please enter your first name');
-                                if (form.first) form.first.focus();
-                                return false;
-                            }
+                <div class="api-property-details-right">
+                    <div class="api-property-contact <?= $contact_white ?>">
+                        <p class="contact-intro">Contact Our Sales Office</p>
+                        <p class="agent-info">
+                            <strong class="agent-name"><?= $sales_name ?></strong><br>
+                            <a class="agent-phone" href="tel:<?= $phone_link ?>"><?= $sales_phone ?></a><br>
+                            <a class="agent-email" href="mailto:<?= $sales_email ?>"><?= $sales_email ?></a>
+                        </p>
+                        <?php if(!$allowed_domain): ?>
+                        <script type="text/javascript">
+                            let form_settings = <?= json_encode($form_settings) ?>;
                             
-                            // Check Last Name
-                            if (!form.last || form.last.value.trim() == '') {
-                                alert('Please enter your last name');
-                                if (form.last) form.last.focus();
-                                return false;
-                            }
-                            
-                            // Check Phone
-                            if (!form.phone || form.phone.value.trim() == '') {
-                                alert('Please enter your phone number');
-                                if (form.phone) form.phone.focus();
-                                return false;
-                            }
-                            
-                            // Check Email (required)
-                            if (!form.email || form.email.value.trim() == '') {
-                                alert('Please enter your email address');
-                                if (form.email) form.email.focus();
-                                return false;
-                            }
-                            
-                            // Validate Email Format
-                            var emailRegex = /^.+@.+\..{2,6}$/;
-                            if (form.email.value && !emailRegex.test(form.email.value)) {
-                                alert('Please enter a valid email address');
-                                if (form.email) form.email.focus();
-                                return false;
-                            }
+                            function checkForm(form) {
+                                // Check First Name
+                                if (!form.first || form.first.value.trim() == '') {
+                                    alert('Please enter your first name');
+                                    if (form.first) form.first.focus();
+                                    return false;
+                                }
+                                
+                                // Check Last Name
+                                if (!form.last || form.last.value.trim() == '') {
+                                    alert('Please enter your last name');
+                                    if (form.last) form.last.focus();
+                                    return false;
+                                }
+                                
+                                // Check Phone
+                                if (!form.phone || form.phone.value.trim() == '') {
+                                    alert('Please enter your phone number');
+                                    if (form.phone) form.phone.focus();
+                                    return false;
+                                }
+                                
+                                // Check Email (required)
+                                if (!form.email || form.email.value.trim() == '') {
+                                    alert('Please enter your email address');
+                                    if (form.email) form.email.focus();
+                                    return false;
+                                }
+                                
+                                // Validate Email Format
+                                var emailRegex = /^.+@.+\..{2,6}$/;
+                                if (form.email.value && !emailRegex.test(form.email.value)) {
+                                    alert('Please enter a valid email address');
+                                    if (form.email) form.email.focus();
+                                    return false;
+                                }
 
-                            /*
-                            
-                            // Check Preferred Contact Method (checkboxes)
-                            var contactMethodFieldName = form_settings['contact_method_field_id'] + '[]';
-                            var contactMethodCheckboxes = form.querySelectorAll('input[name="' + contactMethodFieldName + '"]');
-                            var contactMethodChecked = false;
-                            
-                            if (contactMethodCheckboxes && contactMethodCheckboxes.length > 0) {
-                                // Check if any checkbox is checked
-                                for (var i = 0; i < contactMethodCheckboxes.length; i++) {
-                                    if (contactMethodCheckboxes[i].checked) {
-                                        contactMethodChecked = true;
-                                        break;
+                                /*
+                                
+                                // Check Preferred Contact Method (checkboxes)
+                                var contactMethodFieldName = form_settings['contact_method_field_id'] + '[]';
+                                var contactMethodCheckboxes = form.querySelectorAll('input[name="' + contactMethodFieldName + '"]');
+                                var contactMethodChecked = false;
+                                
+                                if (contactMethodCheckboxes && contactMethodCheckboxes.length > 0) {
+                                    // Check if any checkbox is checked
+                                    for (var i = 0; i < contactMethodCheckboxes.length; i++) {
+                                        if (contactMethodCheckboxes[i].checked) {
+                                            contactMethodChecked = true;
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                            
-                            if (!contactMethodChecked) {
-                                alert('Please select at least one preferred contact method');
-                                return false;
-                            }
-                            
-                            // Check "How soon are you looking to move?" dropdown
-                            var moveInField = form[form_settings['move_in_date_field_id']];
-                            if (!moveInField || !moveInField.value || moveInField.value.trim() == '') {
-                                alert('Please select how soon you are looking to move');
-                                if (moveInField) moveInField.focus();
-                                return false;
-                            }
-                            
-                            
-                            // Check "How did you hear about us?" dropdown
-                            var referralField = form[form_settings['referral_source_field_id']];
-                            if (!referralField || !referralField.value || referralField.value.trim() == '') {
-                                alert('Please select how you heard about us');
-                                if (referralField) referralField.focus();
-                                return false;
-                            }
-                            */
-                            
-                            // Check reCAPTCHA (if present)
-                            if (typeof grecaptcha !== 'undefined') {
-                                try {
-                                    var recaptchaResponse = grecaptcha.getResponse();
-                                    if (!recaptchaResponse || recaptchaResponse.length == 0) {
+                                
+                                if (!contactMethodChecked) {
+                                    alert('Please select at least one preferred contact method');
+                                    return false;
+                                }
+                                
+                                // Check "How soon are you looking to move?" dropdown
+                                var moveInField = form[form_settings['move_in_date_field_id']];
+                                if (!moveInField || !moveInField.value || moveInField.value.trim() == '') {
+                                    alert('Please select how soon you are looking to move');
+                                    if (moveInField) moveInField.focus();
+                                    return false;
+                                }
+                                
+                                
+                                // Check "How did you hear about us?" dropdown
+                                var referralField = form[form_settings['referral_source_field_id']];
+                                if (!referralField || !referralField.value || referralField.value.trim() == '') {
+                                    alert('Please select how you heard about us');
+                                    if (referralField) referralField.focus();
+                                    return false;
+                                }
+                                */
+                                
+                                // Check reCAPTCHA (if present)
+                                if (typeof grecaptcha !== 'undefined') {
+                                    try {
+                                        var recaptchaResponse = grecaptcha.getResponse();
+                                        if (!recaptchaResponse || recaptchaResponse.length == 0) {
+                                            alert('Please complete the reCAPTCHA verification');
+                                            return false;
+                                        }
+                                    } catch(e) {
+                                        // reCAPTCHA might not be ready, but we should still check
                                         alert('Please complete the reCAPTCHA verification');
                                         return false;
                                     }
-                                } catch(e) {
-                                    // reCAPTCHA might not be ready, but we should still check
-                                    alert('Please complete the reCAPTCHA verification');
-                                    return false;
                                 }
+                                
+                                // Push form submission event to dataLayer
+                                window.dataLayer = window.dataLayer || [];
+                                window.dataLayer.push({
+                                    'event': 'formSubmission_success'
+                                });
+                                
+                                return true;
                             }
-                            
-                            // Push form submission event to dataLayer
-                            window.dataLayer = window.dataLayer || [];
-                            window.dataLayer.push({
-                                'event': 'formSubmission_success'
-                            });
-                            
-                            return true;
-                        }
-                    </script>
-                    <form name="openleads" method="post" action="<?= $form_settings['form_action'] ?>" onsubmit="return checkForm(this);" novalidate>
-                        <div class="api-property-form-field">
-                            <label for="first">First Name *</label>
-                            <input type="text" size="40" maxlength="200" id="first" name="first" value="" required="">
-                        </div>
-
-                        <div class="api-property-form-field">
-                            <label for="last">Last Name *</label>
-                            <input type="text" size="40" maxlength="200" id="last" name="last" value="" required="">
-                        </div>
-                        <div class="api-property-form-field">
-                            <label for="phone">Phone *</label>
-                            <input type="text" size="40" maxlength="200" id="phone" name="phone" value="" required="">
-                        </div>
-                        <div class="api-property-form-field">
-                            <label for="email">Email *</label>
-                            <input type="text" size="40" maxlength="200" id="email" name="email" value="">
-                        </div>
-
-                        <div class="api-property-form-field">
-                            <label class="api-property-form-check-label" for="<?= $form_settings['contact_method_field_id'] ?>_0">Preferred Contact Method</label>
-
-                            <div class="api-property-form-check">
-                                <label>Phone Call</label>
-                                <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_0" value="Phone Call" >
+                        </script>
+                        <form name="openleads" method="post" action="<?= $form_settings['form_action'] ?>" onsubmit="return checkForm(this);" novalidate>
+                            <div class="api-property-form-field">
+                                <label for="first">First Name *</label>
+                                <input type="text" size="40" maxlength="200" id="first" name="first" value="" required="">
                             </div>
-                            <div class="api-property-form-check">
-                                <label>Email</label>
-                                <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_1" value="Email" >
+
+                            <div class="api-property-form-field">
+                                <label for="last">Last Name *</label>
+                                <input type="text" size="40" maxlength="200" id="last" name="last" value="" required="">
                             </div>
-                            <div class="api-property-form-check">
-                                <label>Text Message</label>
-                                <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_2" value="Text Message" >
+                            <div class="api-property-form-field">
+                                <label for="phone">Phone *</label>
+                                <input type="text" size="40" maxlength="200" id="phone" name="phone" value="" required="">
                             </div>
+                            <div class="api-property-form-field">
+                                <label for="email">Email *</label>
+                                <input type="text" size="40" maxlength="200" id="email" name="email" value="">
+                            </div>
+
+                            <div class="api-property-form-field">
+                                <label class="api-property-form-check-label" for="<?= $form_settings['contact_method_field_id'] ?>_0">Preferred Contact Method</label>
+
+                                <div class="api-property-form-check">
+                                    <label>Phone Call</label>
+                                    <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_0" value="Phone Call" >
+                                </div>
+                                <div class="api-property-form-check">
+                                    <label>Email</label>
+                                    <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_1" value="Email" >
+                                </div>
+                                <div class="api-property-form-check">
+                                    <label>Text Message</label>
+                                    <input class="api-property-form-check-input" type="checkbox" name="<?= $form_settings['contact_method_field_id'] ?>[]" id="<?= $form_settings['contact_method_field_id'] ?>_2" value="Text Message" >
+                                </div>
+                            </div>
+
+                            <div class="api-property-form-field">
+                                <label for="<?= $form_settings['move_in_date_field_id'] ?>">How soon are you looking to move?</label>
+                                <select id="<?= $form_settings['move_in_date_field_id'] ?>" name="<?= $form_settings['move_in_date_field_id'] ?>">
+                                    <option value=""></option>
+                                    <option value="1-3 Months">1-3 Months</option>
+                                    <option value="3-6 Months">3-6 Months</option>
+                                    <option value="6-9 Months">6-9 Months</option>
+                                    <option value="9-12 Months">9-12 Months</option>
+                                    <option value="Unknown">Unknown</option>
+                                </select>
+                            </div>
+
+                            <div class="api-property-form-field">
+                                <label for="<?= $form_settings['referral_source_field_id'] ?>">How did you hear about us?</label>
+                                <select id="<?= $form_settings['referral_source_field_id'] ?>" name="<?= $form_settings['referral_source_field_id'] ?>">
+                                    <option value=""></option>
+                                    <option value="Google">Google</option>
+                                    <option value="MH Village">MH Village</option>
+                                    <option value="Retirenet.com">Retirenet.com</option>
+                                    <option value="Zillow">Zillow</option>
+                                    <option value="Social Media">Social Media</option>
+                                    <option value="Drive By">Drive By</option>
+                                    <option value="TV">TV</option>
+                                    <option value="Realtor">Realtor</option>
+                                    <option value="Newspaper/Magazine">Newspaper/Magazine</option>
+                                    <option value="Resident Referral">Resident Referral</option>
+                                    <option value="Event">Event</option>
+                                    <option value="MLS">MLS</option>
+                                    <option value="Radio">Radio</option>
+                                    <option value="RV'r">RV'r</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="api-property-form-field">
+                                <label for="<?= $form_settings['message_field_id'] ?>">Message</label>
+                                <textarea id="<?= $form_settings['message_field_id'] ?>" name="<?= $form_settings['message_field_id'] ?>" cols="50" rows="10" style="height: 200px;"></textarea>
+                            </div>
+                            <input type="hidden" size="20" id="<?= $form_settings['hidden_field_id'] ?>" name="<?= $form_settings['hidden_field_id'] ?>" value="<?= $property_n . '/' . $listdate ?>">
+                            <script src='https://www.google.com/recaptcha/api.js'></script>
+                            <div class="g-recaptcha" data-sitekey="<?= $form_settings['recaptcha_site_key'] ?>"></div>
+                            <input type="submit" class="button-api-listing" name="send" value="Send" id="check">
+                            <style>
+                                .x-oh{
+                                    /* IE 8 */
+                                    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+
+                                    /* IE 5-7 */
+                                    filter: alpha(opacity=0);
+
+                                    /* Netscape */
+                                    -moz-opacity: 0;
+
+                                    /* Safari 1.x */
+                                    -khtml-opacity: 0;
+
+                                    /* Good browsers */
+                                    opacity: 0;
+
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    height: 0;
+                                    width: 0;
+                                    z-index: -1;
+                                }
+                            </style>
+                            <label class="x-oh" for="name"></label>
+                            <input class="x-oh" autocomplete="off" type="text" id="xo-name" name="xoname" placeholder="Your name here">
+                            <label class="x-oh" for="email"></label>
+                            <input class="x-oh" autocomplete="off" type="email" id="xo-email" name="xoemail" placeholder="Your e-mail here">
+                            <p class="form-disclaimer" style="font-size: 0.75rem; margin-top: 0.75rem; line-height: 1.4;">By pressing the SEND button, you hereby consent to receive automated marketing phone, email, and/or SMS messages from Legacy Communities using the contact information above. Consent is not required for residency application or approval. Message and data rates may apply. Message frequency varies. Wireless carriers are not liable for delayed or undelivered messages. Text [HELP] for help and [STOP] to cancel. For questions, please contact us. <a href="/privacy-policy/" style="text-decoration: underline; font-weight: bold; font-size: 0.75rem;">View our Privacy Policy</a>.</p>
+                        </form>
+                        <?php else: ?>
+                        <a class="button-api-listing" style="display: inline-block; margin-top: 15px;" href="/contact?listingid=<?= $id ?>&sourcepage=listingdetails">Contact Us</a>
+                        <?php endif; ?>
+                    </div>
+                    <?php if($allowed_domain): ?>
+                        <div class="api-property-details-container <?= $details_white ?>">
+                            <?= $details_html ?>
                         </div>
-
-                        <div class="api-property-form-field">
-                            <label for="<?= $form_settings['move_in_date_field_id'] ?>">How soon are you looking to move?</label>
-                            <select id="<?= $form_settings['move_in_date_field_id'] ?>" name="<?= $form_settings['move_in_date_field_id'] ?>">
-                                <option value=""></option>
-                                <option value="1-3 Months">1-3 Months</option>
-                                <option value="3-6 Months">3-6 Months</option>
-                                <option value="6-9 Months">6-9 Months</option>
-                                <option value="9-12 Months">9-12 Months</option>
-                                <option value="Unknown">Unknown</option>
-                            </select>
-                        </div>
-
-                        <div class="api-property-form-field">
-                            <label for="<?= $form_settings['referral_source_field_id'] ?>">How did you hear about us?</label>
-                            <select id="<?= $form_settings['referral_source_field_id'] ?>" name="<?= $form_settings['referral_source_field_id'] ?>">
-                                <option value=""></option>
-                                <option value="Google">Google</option>
-                                <option value="MH Village">MH Village</option>
-                                <option value="Retirenet.com">Retirenet.com</option>
-                                <option value="Zillow">Zillow</option>
-                                <option value="Social Media">Social Media</option>
-                                <option value="Drive By">Drive By</option>
-                                <option value="TV">TV</option>
-                                <option value="Realtor">Realtor</option>
-                                <option value="Newspaper/Magazine">Newspaper/Magazine</option>
-                                <option value="Resident Referral">Resident Referral</option>
-                                <option value="Event">Event</option>
-                                <option value="MLS">MLS</option>
-                                <option value="Radio">Radio</option>
-                                <option value="RV'r">RV'r</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="api-property-form-field">
-                            <label for="<?= $form_settings['message_field_id'] ?>">Message</label>
-                            <textarea id="<?= $form_settings['message_field_id'] ?>" name="<?= $form_settings['message_field_id'] ?>" cols="50" rows="10" style="height: 200px;"></textarea>
-                        </div>
-                        <input type="hidden" size="20" id="<?= $form_settings['hidden_field_id'] ?>" name="<?= $form_settings['hidden_field_id'] ?>" value="<?= $property_n . '/' . $listdate ?>">
-                        <script src='https://www.google.com/recaptcha/api.js'></script>
-                        <div class="g-recaptcha" data-sitekey="<?= $form_settings['recaptcha_site_key'] ?>"></div>
-                        <input type="submit" class="button-api-listing" name="send" value="Send" id="check">
-                        <style>
-                            .x-oh{
-                                /* IE 8 */
-                                -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-
-                                /* IE 5-7 */
-                                filter: alpha(opacity=0);
-
-                                /* Netscape */
-                                -moz-opacity: 0;
-
-                                /* Safari 1.x */
-                                -khtml-opacity: 0;
-
-                                /* Good browsers */
-                                opacity: 0;
-
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                height: 0;
-                                width: 0;
-                                z-index: -1;
-                            }
-                        </style>
-                        <label class="x-oh" for="name"></label>
-                        <input class="x-oh" autocomplete="off" type="text" id="xo-name" name="xoname" placeholder="Your name here">
-                        <label class="x-oh" for="email"></label>
-                        <input class="x-oh" autocomplete="off" type="email" id="xo-email" name="xoemail" placeholder="Your e-mail here">
-                        <p class="form-disclaimer" style="font-size: 0.75rem; margin-top: 0.75rem; line-height: 1.4;">By pressing the SEND button, you hereby consent to receive automated marketing phone, email, and/or SMS messages from Legacy Communities using the contact information above. Consent is not required for residency application or approval. Message and data rates may apply. Message frequency varies. Wireless carriers are not liable for delayed or undelivered messages. Text [HELP] for help and [STOP] to cancel. For questions, please contact us. <a href="/privacy-policy/" style="text-decoration: underline; font-weight: bold; font-size: 0.75rem;">View our Privacy Policy</a>.</p>
-                    </form>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -567,7 +669,6 @@ endif;
                 <?php if($branding_image): ?>
                     <img class="print-logo" src="<?= $branding_image ?>" alt="<?= get_bloginfo('name') ?>"> 
                 <?php endif; ?>
-                <strong class="print-website-url"><?= $website_url ?></strong>
             </div>
             <div class="print-gallery">
             <?php if($gallery || $featured_image): ?>
@@ -590,19 +691,14 @@ endif;
 
             <div class="print-details__container">
                 <div class="print-contact-details">
-                    <div class="print-contact-info">
-                    <strong><?= $sales_name ?></strong>
-                    <a class="print-contact-info__phone" href="tel:<?= $phone_link ?>"><?= $phone_link ?></a>
-                    <a class="print-contact-info__email" href="mailto:<?= $sales_email ?>"><?= $sales_email ?></a>
-                    </div>
-                    <div class="print-details">
-                    <?php foreach ($print_details as $key => $detail): ?>
-                    <div class="print-details__item">
-                        <span class="print-details__item__key"><?= $key ?>: </span>
-                        <span class="print-details__item__value"><?= $detail ?></span>
-                    </div>
-                    <?php endforeach; ?>
-                    </div>
+                    <ul class="print-details">
+                        <?php foreach ($print_details as $key => $detail): ?>
+                        <li class="print-details__item">
+                            <span class="print-details__item__key"><?= $key ?>: </span>
+                            <span class="print-details__item__value"><?= $detail ?></span>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
 
                 <div class="print-description">
@@ -611,6 +707,19 @@ endif;
                     <div class="print-description__content">
                     <?= $content ?>
                     </div>
+                </div>
+            </div>
+
+            <div class="print-footer-container">
+                <div class="print-website-url-container">
+                    <strong class="print-website-url"><?= $website_url ?></strong>
+                </div>
+                <div class="print-contact-info">
+                    <img class="print-equal-housing-logo" src="<?= plugins_url('assets/images/equal-housing-logo.png', dirname(__FILE__)) ?>" alt="Equal Housing Logo">
+                    <img class="print-legacy-logo" src="<?= plugins_url('assets/images/legacy-logo.png', dirname(__FILE__)) ?>" alt="Legacy Communities Logo">
+                    <strong><?= $sales_name ?></strong>
+                    <a class="print-contact-info__phone" href="tel:<?= $phone_link ?>"><?= $phone_link ?></a>
+                    <a class="print-contact-info__email" href="mailto:<?= $sales_email ?>"><?= $sales_email ?></a>
                 </div>
             </div>
         </div>

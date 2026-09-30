@@ -3,7 +3,7 @@
  * Plugin Name: Legacy Listings API
  * Plugin URI: https://www.getindio.com/
  * Description: Adds shortcodes for displaying home listings from the Legacy listings API.
- * Version: 2.61
+ * Version: 2.67
  * Author: Adrian Figueroa
  * Author URI: https://www.getindio.com
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.61');
+define('BRM_API_LISTINGS_PLUGIN_VERSION', '2.67');
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BRM_API_LISTINGS_PLUGIN_PLUGIN_FILE', __FILE__);
@@ -127,6 +127,7 @@ class BrmApiListingsPlugin {
     private function load_dependencies() {
         // Include additional files - here
         require_once BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR . 'includes/blocks/listings-intro-dual-cta/block.php';
+        require_once BRM_API_LISTINGS_PLUGIN_PLUGIN_DIR . 'includes/markup-api.php';
     }
 
     /**
@@ -1206,6 +1207,22 @@ class BrmApiListingsPlugin {
         );
 
         wp_enqueue_script(
+            'brm-api-listings-plugin-form-util',
+            BRM_API_LISTINGS_PLUGIN_PLUGIN_URL . 'assets/js/form-util.js',
+            array('jquery'),
+            BRM_API_LISTINGS_PLUGIN_VERSION,
+            true
+        );
+
+        wp_enqueue_script(
+            'brm-api-listings-plugin-attribution-tracking',
+            BRM_API_LISTINGS_PLUGIN_PLUGIN_URL . 'assets/js/attribution-tracking-plugin.js',
+            array(),
+            BRM_API_LISTINGS_PLUGIN_VERSION,
+            true
+        );
+
+        wp_enqueue_script(
             'brm-api-listings-plugin-shortcode',
             BRM_API_LISTINGS_PLUGIN_PLUGIN_URL . 'assets/js/shortcode.js',
             array('jquery'),
@@ -1268,6 +1285,7 @@ class BrmApiListingsPlugin {
     public function register_shortcodes() {
         add_shortcode('api_listings_cards', array($this, 'api_listings_cards_callback'));
         add_shortcode('api_listing_details', array($this, 'api_listing_details_callback'));
+        add_shortcode('api_listing_api_form', array($this, 'api_listing_api_form_callback'));
         add_shortcode('api_listings_contact_form', array($this, 'api_listings_contact_form_callback'));
         add_shortcode('api_listings_tour_form', array($this, 'api_listings_tour_form_callback'));
         add_shortcode('api_listings_landing_form', array($this, 'api_listings_landing_form_callback'));
@@ -1465,7 +1483,7 @@ class BrmApiListingsPlugin {
 
     public function form_disclaimer() {
         echo '
-        <p class="form-disclaimer" style="font-size: 0.75rem; margin-top: 0.75rem; line-height: 1.4;">By pressing the SEND button, you hereby consent to receive automated marketing phone, email, and/or SMS messages from Legacy Communities using the contact information above. Consent is not required for residency application or approval. Message and data rates may apply. Message frequency varies. Wireless carriers are not liable for delayed or undelivered messages. Text [HELP] for help and [STOP] to cancel. For questions, please contact us. <a href="/privacy-policy/" style="text-decoration: underline; font-weight: bold; font-size: 0.75rem;">View our Privacy Policy</a>.</p>
+        <p class="form-disclaimer" style="font-size: 10px; margin-top: 0.75rem; line-height: 1.4;">By pressing the SEND button, you hereby consent to receive automated marketing phone, email, and/or SMS messages from Legacy Communities using the contact information above. Consent is not required for residency application or approval. Message and data rates may apply. Message frequency varies. Wireless carriers are not liable for delayed or undelivered messages. Text [HELP] for help and [STOP] to cancel. For questions, please contact us. <a href="/privacy-policy/" style="text-decoration: underline; font-weight: bold; font-size: 0.75rem;">View our Privacy Policy</a>.</p>
         ';
     }
 
@@ -1477,6 +1495,26 @@ class BrmApiListingsPlugin {
                 return true;
             }
         </script>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode callback for markup API form
+     */
+    public function api_listing_api_form_callback($atts, $content = '') {
+        $atts = shortcode_atts(array(
+            'markupkey' => 'default',
+            'community-id' => '',
+            'baseurl' => 'https://www.legacymhc.com/wp-json/listings-api/v1/markup',
+        ), $atts, 'api_listing_api_form');
+
+        ob_start();
+        ?>
+
+        <div class="api-form-container api-listings-markup" data-markup-key="<?php echo esc_attr($atts['markupkey']); ?>" data-base-url="<?php echo esc_attr($atts['baseurl']); ?>" data-community-id="<?php echo esc_attr($atts['community-id']); ?>">
+        </div>
+
         <?php
         return ob_get_clean();
     }
@@ -1670,11 +1708,11 @@ class BrmApiListingsPlugin {
                         form.first.focus();
                         return false;
                     }
-                    if (!form.last.value.trim()) {
-                        alert('Please enter your last name');
-                        form.last.focus();
-                        return false;
-                    }
+                    // if (!form.last.value.trim()) {
+                    //     alert('Please enter your last name');
+                    //     form.last.focus();
+                    //     return false;
+                    // }
                     if (!form.email.value.trim()) {
                         alert('Please enter your email');
                         form.email.focus();
@@ -1690,18 +1728,18 @@ class BrmApiListingsPlugin {
                         form.phone.focus();
                         return false;
                     }
-                    var contactMethodName = '<?php echo esc_js($contact_method_id ?: 'contact_method'); ?>';
-                    var contactChecked = form.querySelectorAll('input[name="' + contactMethodName + '[]"]:checked');
-                    if (contactChecked.length === 0) {
-                        alert('Please select at least one preferred contact method');
-                        return false;
-                    }
-                    var tourDateField = form.querySelector('input[name="<?php echo esc_js($tour_date_id ?: 'tour_date'); ?>"]');
-                    if (!tourDateField || !tourDateField.value) {
-                        alert('Please select a preferred tour date');
-                        if (tourDateField) tourDateField.focus();
-                        return false;
-                    }
+                    // var contactMethodName = '<?php echo esc_js($contact_method_id ?: 'contact_method'); ?>';
+                    // var contactChecked = form.querySelectorAll('input[name="' + contactMethodName + '[]"]:checked');
+                    // if (contactChecked.length === 0) {
+                    //     alert('Please select at least one preferred contact method');
+                    //     return false;
+                    // }
+                    // var tourDateField = form.querySelector('input[name="<?php echo esc_js($tour_date_id ?: 'tour_date'); ?>"]');
+                    // if (!tourDateField || !tourDateField.value) {
+                    //     alert('Please select a preferred tour date');
+                    //     if (tourDateField) tourDateField.focus();
+                    //     return false;
+                    // }
                     if (typeof grecaptcha !== 'undefined') {
                         try {
                             var recaptchaResponse = grecaptcha.getResponse();
@@ -1808,11 +1846,11 @@ class BrmApiListingsPlugin {
                         form.first.focus();
                         return false;
                     }
-                    if (!form.last.value.trim()) {
-                        alert('Please enter your last name');
-                        form.last.focus();
-                        return false;
-                    }
+                    // if (!form.last.value.trim()) {
+                    //     alert('Please enter your last name');
+                    //     form.last.focus();
+                    //     return false;
+                    // }
                     if (!form.email.value.trim()) {
                         alert('Please enter your email');
                         form.email.focus();
@@ -1828,18 +1866,18 @@ class BrmApiListingsPlugin {
                         form.phone.focus();
                         return false;
                     }
-                    var contactMethodName = '<?php echo esc_js($contact_method_id ?: 'contact_method'); ?>';
-                    var contactChecked = form.querySelectorAll('input[name="' + contactMethodName + '[]"]:checked');
-                    if (contactChecked.length === 0) {
-                        alert('Please select at least one preferred contact method');
-                        return false;
-                    }
-                    var tourDateField = form.querySelector('input[name="<?php echo esc_js($tour_date_id ?: 'tour_date'); ?>"]');
-                    if (!tourDateField || !tourDateField.value) {
-                        alert('Please select a preferred tour date');
-                        if (tourDateField) tourDateField.focus();
-                        return false;
-                    }
+                    // var contactMethodName = '<?php echo esc_js($contact_method_id ?: 'contact_method'); ?>';
+                    // var contactChecked = form.querySelectorAll('input[name="' + contactMethodName + '[]"]:checked');
+                    // if (contactChecked.length === 0) {
+                    //     alert('Please select at least one preferred contact method');
+                    //     return false;
+                    // }
+                    // var tourDateField = form.querySelector('input[name="<?php echo esc_js($tour_date_id ?: 'tour_date'); ?>"]');
+                    // if (!tourDateField || !tourDateField.value) {
+                    //     alert('Please select a preferred tour date');
+                    //     if (tourDateField) tourDateField.focus();
+                    //     return false;
+                    // }
                     if (typeof grecaptcha !== 'undefined') {
                         try {
                             var recaptchaResponse = grecaptcha.getResponse();
